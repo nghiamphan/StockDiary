@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainMenuActivity"
+    android:background="@color/green">
+
+    <TextView
+        style="@style/main_menu_motto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/motto" />
+
+    <Button
+        android:id="@+id/main_menu_watchlist_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/watch_list"
+        style="@style/main_menu_button"/>
+
+    <Button
+        android:id="@+id/main_menu_portfolio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/portfolio"
+        style="@style/main_menu_button"/>
+
+    <Button
+        android:id="@+id/main_menu_diary_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/diary"
+        style="@style/main_menu_button"/>
+
+</LinearLayout>

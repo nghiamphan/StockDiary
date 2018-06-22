@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Stock Diary</string>
+    <string name="motto">Be a disciplined investor</string>
+    <string name="watch_list">Watchlist</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="diary">Diary</string>
+</resources>
