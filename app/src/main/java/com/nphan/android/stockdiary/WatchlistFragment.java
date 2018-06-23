@@ -72,7 +72,13 @@ public class WatchlistFragment extends Fragment {
 
         public void bindItem(StockItem stockItem) {
             stockTickerTextView.setText(stockItem.getTicker());
-            stockPriceTextView.setText(Float.toString(stockItem.getPrice()));
+
+            if (stockItem.getPrice() == null) {
+                stockPriceTextView.setText(R.string.not_available);
+            }
+            else {
+                stockPriceTextView.setText(Float.toString(stockItem.getPrice()));
+            }
         }
     }
 
@@ -111,6 +117,8 @@ public class WatchlistFragment extends Fragment {
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
             List<String> tickers = new DataFetch().fetchStockTickers();
+            //List<String > tickers = new ArrayList<String>();
+            //tickers.add("arnc-");
             return new DataFetch().fetchStockQuote(tickers);
         }
 

@@ -2,7 +2,7 @@ package com.nphan.android.stockdiary;
 
 public class StockItem {
     private String ticker;
-    private float price;
+    private Float price;
 
     public String getTicker() {
         return ticker;
@@ -12,11 +12,11 @@ public class StockItem {
         this.ticker = ticker;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 }

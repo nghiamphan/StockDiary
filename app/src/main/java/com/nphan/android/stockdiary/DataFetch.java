@@ -125,7 +125,14 @@ public class DataFetch {
         JSONObject jsonObject = new JSONObject(jsonString);
         StockItem item = new StockItem();
         item.setTicker(ticker);
-        item.setPrice(Float.valueOf(jsonObject.getString("latestPrice"))); // Note: null price
+
+        if (jsonObject.isNull("latestPrice")) {
+            item.setPrice(null);
+        }
+        else {
+            item.setPrice(Float.valueOf(jsonObject.getString("latestPrice")));
+        }
+
         stockItems.add(item);
     }
 }
