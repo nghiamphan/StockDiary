@@ -7,9 +7,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,9 +24,11 @@ import java.util.List;
 public class WatchlistFragment extends Fragment {
 
     private List<StockItem> mStockItems = new ArrayList<>();
+    private List<String> mTickers = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private StockItemAdapter mAdapter;
+    private SearchView mSearchView;
 
     public static WatchlistFragment newInstance() {
         
@@ -34,6 +42,7 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         new FetchDataTask().execute();
     }
 
@@ -46,6 +55,35 @@ public class WatchlistFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_watchlist, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.toolbar_search_item);
+        mSearchView = (SearchView) searchItem.getActionView();
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+
+    private void setupAutoSearchView(SearchView searchView) {
+        AutoCompleteTextView autoCompleteTextView = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        autoCompleteTextView.setThreshold(1);
+
+        ArrayAdapter<String> newsAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, mTickers);
+        autoCompleteTextView.setAdapter(newsAdapter);
     }
 
     private void setupAdapter() {
@@ -116,16 +154,15 @@ public class WatchlistFragment extends Fragment {
     private class FetchDataTask extends AsyncTask<Void, Void, List<StockItem>> {
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
-            List<String> tickers = new DataFetch().fetchStockTickers();
-            //List<String > tickers = new ArrayList<String>();
-            //tickers.add("arnc-");
-            return new DataFetch().fetchStockQuote(tickers);
+            mTickers = new DataFetch().fetchStockTickers();
+            return new DataFetch().fetchStockQuote(mTickers);
         }
 
         @Override
         protected void onPostExecute(List<StockItem> items) {
             mStockItems = items;
             setupAdapter();
+            setupAutoSearchView(mSearchView);
         }
     }
 }

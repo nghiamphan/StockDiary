@@ -4,5 +4,6 @@
     <string name="watch_list">Watchlist</string>
     <string name="portfolio">Portfolio</string>
     <string name="diary">Diary</string>
+    <string name="search">Search</string>
     <string name="not_available">N/A</string>
 </resources>
