@@ -107,7 +107,7 @@ public class DataFetch {
                         .appendPath(QUOTE);
                 String urlString = uriBuilder.toString();
                 String jsonString = getUrlString(urlString);
-                parseStockQuote(stockItems, jsonString, ticker);
+                parseStockItem(stockItems, jsonString, ticker);
                 Log.i(TAG, ticker);
             }
             catch (IOException ioe) {
@@ -121,10 +121,11 @@ public class DataFetch {
         return stockItems;
     }
 
-    private void parseStockQuote(List<StockItem> stockItems, String jsonString, String ticker) throws JSONException{
+    private void parseStockItem(List<StockItem> stockItems, String jsonString, String ticker) throws JSONException{
         JSONObject jsonObject = new JSONObject(jsonString);
         StockItem item = new StockItem();
         item.setTicker(ticker);
+        item.setCompanyName(jsonObject.getString("companyName"));
 
         if (jsonObject.isNull("latestPrice")) {
             item.setPrice(null);

@@ -1,5 +1,6 @@
 package com.nphan.android.stockdiary;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         new FetchDataTask().execute();
     }
 
@@ -46,6 +51,27 @@ public class WatchlistFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_watchlist, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.toolbar_search_item);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toolbar_search_item:
+                Intent intent = StockSearchActivity.newIntent(getActivity());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void setupAdapter() {
@@ -97,7 +123,7 @@ public class WatchlistFragment extends Fragment {
         @Override
         public StockItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            View itemView = inflater.inflate(R.layout.list_item_stock, parent, false);
+            View itemView = inflater.inflate(R.layout.list_item_stock_watchlist, parent, false);
             return new StockItemHolder(itemView);
         }
 

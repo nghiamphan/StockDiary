@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".WatchlistActivity"/>
+        <activity android:name=".StockSearchActivity"/>
     </application>
 
 </manifest>
