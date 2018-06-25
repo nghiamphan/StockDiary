@@ -1,6 +1,7 @@
 package com.nphan.android.stockdiary;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import java.util.List;
 
 public class MainMenuFragment extends Fragment {
 
@@ -19,6 +22,12 @@ public class MainMenuFragment extends Fragment {
         MainMenuFragment fragment = new MainMenuFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        new FetchTickerAndNameTask().execute();
     }
 
     @Nullable
@@ -36,5 +45,14 @@ public class MainMenuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private class FetchTickerAndNameTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<StockItem> tickerAndNameList = new DataFetch().fetchStockTickerAndName();
+            StockSharedPreferences.setStockList(getActivity(), tickerAndNameList);
+            return null;
+        }
     }
 }

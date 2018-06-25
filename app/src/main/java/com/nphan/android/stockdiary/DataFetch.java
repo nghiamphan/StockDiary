@@ -57,9 +57,9 @@ public class DataFetch {
         return new String(getUrlBytes(urlString));
     }
 
-    public List<String> fetchStockTickers() {
+    public List<StockItem> fetchStockTickerAndName() {
 
-        List<String> tickers = new ArrayList<>();
+        List<StockItem> stockItems = new ArrayList<>();
 
         try {
             Uri.Builder uriBuilder = ENDPOINT
@@ -69,7 +69,7 @@ public class DataFetch {
 
             String urlString = uriBuilder.toString();
             String jsonString = getUrlString(urlString);
-            parseStockTickers(tickers, jsonString);
+            parseStockTickerAndName(stockItems, jsonString);
         }
         catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
@@ -78,18 +78,21 @@ public class DataFetch {
             Log.e(TAG, "Failed to parse JSON", je);
         }
 
-        return tickers;
+        return stockItems;
     }
 
-    private void parseStockTickers(List<String> tickers, String  jsonString) throws JSONException{
+    private void parseStockTickerAndName(List<StockItem> stockItems, String  jsonString) throws JSONException{
         JSONArray jsonArray = new JSONArray(jsonString);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject stockJsonObject = jsonArray.getJSONObject(i);
-            tickers.add(stockJsonObject.getString("symbol"));
+            StockItem stockItem = new StockItem();
+            stockItem.setTicker(stockJsonObject.getString("symbol"));
+            stockItem.setCompanyName(stockJsonObject.getString("name"));
+            stockItems.add(stockItem);
         }
     }
 
-    public List<StockItem> fetchStockQuote(List<String> tickers) {
+    public List<StockItem> fetchStockItem(List<String> tickers) {
 
         List<StockItem> stockItems = new ArrayList<>();
 

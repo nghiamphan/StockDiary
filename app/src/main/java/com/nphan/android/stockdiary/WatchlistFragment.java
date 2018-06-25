@@ -1,7 +1,6 @@
 package com.nphan.android.stockdiary;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,7 +38,6 @@ public class WatchlistFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        new FetchDataTask().execute();
     }
 
     @Nullable
@@ -57,14 +55,12 @@ public class WatchlistFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_watchlist, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.toolbar_search_item);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.toolbar_search_item:
+            case R.id.menu_item_search_icon:
                 Intent intent = StockSearchActivity.newIntent(getActivity());
                 startActivity(intent);
                 return true;
@@ -139,19 +135,18 @@ public class WatchlistFragment extends Fragment {
         }
     }
 
-    private class FetchDataTask extends AsyncTask<Void, Void, List<StockItem>> {
+    /*private class FetchDataTask extends AsyncTask<Void, Void, List<StockItem>> {
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
-            List<String> tickers = new DataFetch().fetchStockTickers();
-            //List<String > tickers = new ArrayList<String>();
-            //tickers.add("arnc-");
-            return new DataFetch().fetchStockQuote(tickers);
+            List<StockItem> tickerAndNameList = new DataFetch().fetchStockTickerAndName();
+            return new DataFetch().fetchStockItem(tickers);
         }
 
         @Override
         protected void onPostExecute(List<StockItem> items) {
             mStockItems = items;
+            StockSharedPreferences.setStockList(getActivity(), items);
             setupAdapter();
         }
-    }
+    }*/
 }

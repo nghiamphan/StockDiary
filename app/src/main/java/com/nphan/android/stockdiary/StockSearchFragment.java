@@ -4,9 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,7 +22,8 @@ import java.util.List;
 
 public class StockSearchFragment extends Fragment {
 
-    private List<StockItem> mStockItems = new ArrayList<>();
+    private List<StockItem> mStockItems;
+    private List<StockItem> mPersistedStockList;
 
     private RecyclerView mRecyclerView;
     private StockItemAdapter mAdapter;
@@ -34,19 +41,7 @@ public class StockSearchFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        StockItem s1 = new StockItem();
-        s1.setTicker("A");
-        s1.setCompanyName("AAA");
-        StockItem s2 = new StockItem();
-        s2.setTicker("BB");
-        s2.setCompanyName("B");
-        StockItem s3 = new StockItem();
-        s3.setTicker("CCCC");
-        s3.setCompanyName("AAAdfwfs");
-        mStockItems.add(s1);
-        mStockItems.add(s3);
-        mStockItems.add(s1);
-        mStockItems.add(s2);
+        mPersistedStockList = StockSharedPreferences.getStockList(getActivity());
     }
 
     @Nullable
@@ -56,15 +51,56 @@ public class StockSearchFragment extends Fragment {
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setupAdapter();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_stock_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search_view);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setIconified(false);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<StockItem> items = new ArrayList<>();
+                String query = newText.toLowerCase();
+                for (int i = 0; i < mPersistedStockList.size(); i++) {
+                    String ticker = mPersistedStockList.get(i).getTicker().toLowerCase();
+                    String name = mPersistedStockList.get(i).getCompanyName().toLowerCase();
+                    if (ticker.contains(query) || name.contains(query)) {
+                        items.add(mPersistedStockList.get(i));
+                    }
+                }
+                mStockItems = items;
+                Log.i("HIHI size", Integer.toString(mStockItems.size()));
+                setupAdapter();
+                return true;
+            }
+        });
     }
 
     public void setupAdapter() {
         if (mAdapter == null) {
             mAdapter = new StockItemAdapter(mStockItems);
             mRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.setItems(mStockItems);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -82,9 +118,6 @@ public class StockSearchFragment extends Fragment {
         public void bindItem(StockItem stockItem) {
             tickerTextView.setText(stockItem.getTicker());
             companyNameTextView.setText(stockItem.getCompanyName());
-            //tickerTextView.setText("AA");
-            //companyNameTextView.setText("BBBBB");
-
         }
     }
 
@@ -92,6 +125,10 @@ public class StockSearchFragment extends Fragment {
         private List<StockItem> mItems;
 
         public StockItemAdapter(List<StockItem> stockItems) {
+            mItems = stockItems;
+        }
+
+        public void setItems(List<StockItem> stockItems) {
             mItems = stockItems;
         }
 
