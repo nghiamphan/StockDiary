@@ -8,13 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +22,20 @@ import java.util.List;
 
 public class StockSearchFragment extends Fragment {
 
+    /*
+    mTickers retrieves the list of watchlist tickers, adds and removes tickers based on user's action, and is saved back to SharedPreferences once the Fragment is paused.
+    Note for why mTickers is saved to SharedPreferences in method onPause: Order of calls:
+    StockSearchActivity.onPause()
+    WatchlistActivity.onResume()
+    ...
+    StockSearchActivity.onStop()
+    StockSearchActivity.onDestroy()
+
+    mStockItems is the list of stocks to be displayed in RecyclerView.
+
+    mPersistedStockList is the list of all stocks (with tickers and names).
+     */
+    private List<String> mTickers;
     private List<StockItem> mStockItems;
     private List<StockItem> mPersistedStockList;
 
@@ -42,6 +56,7 @@ public class StockSearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mPersistedStockList = StockSharedPreferences.getStockList(getActivity());
+        mTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
     }
 
     @Nullable
@@ -86,11 +101,16 @@ public class StockSearchFragment extends Fragment {
                     }
                 }
                 mStockItems = items;
-                Log.i("HIHI size", Integer.toString(mStockItems.size()));
                 setupAdapter();
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        StockSharedPreferences.setTickerWatchlist(getActivity(), mTickers);
     }
 
     public void setupAdapter() {
@@ -106,18 +126,45 @@ public class StockSearchFragment extends Fragment {
 
     private class StockItemHolder extends RecyclerView.ViewHolder {
 
-        TextView tickerTextView;
-        TextView companyNameTextView;
+        private StockItem mStockItem;
+
+        TextView mTickerTextView;
+        TextView mCompanyNameTextView;
+        ImageButton mAddStockImageButton;
+        private int mDrawableRsId;
 
         public StockItemHolder(View itemView) {
             super(itemView);
-            tickerTextView = itemView.findViewById(R.id.stock_ticker);
-            companyNameTextView = itemView.findViewById(R.id.company_name);
+            mTickerTextView = itemView.findViewById(R.id.stock_ticker);
+            mCompanyNameTextView = itemView.findViewById(R.id.company_name);
+            mAddStockImageButton = itemView.findViewById(R.id.add_stock_image_button);
+            mAddStockImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDrawableRsId == R.drawable.ic_action_add) {
+                        mDrawableRsId = R.drawable.ic_action_checked;
+                        mTickers.add(mStockItem.getTicker());
+                    }
+                    else {
+                        mDrawableRsId = R.drawable.ic_action_add;
+                        mTickers.remove(mStockItem.getTicker());
+                    }
+                    mAddStockImageButton.setImageDrawable(getResources().getDrawable(mDrawableRsId));
+                }
+            });
         }
 
         public void bindItem(StockItem stockItem) {
-            tickerTextView.setText(stockItem.getTicker());
-            companyNameTextView.setText(stockItem.getCompanyName());
+            mStockItem = stockItem;
+            mTickerTextView.setText(stockItem.getTicker());
+            mCompanyNameTextView.setText(stockItem.getCompanyName());
+            if (mTickers.contains(mStockItem.getTicker())) {
+                mDrawableRsId = R.drawable.ic_action_checked;
+            }
+            else {
+                mDrawableRsId = R.drawable.ic_action_add;
+            }
+            mAddStockImageButton.setImageDrawable(getResources().getDrawable(mDrawableRsId));
         }
     }
 

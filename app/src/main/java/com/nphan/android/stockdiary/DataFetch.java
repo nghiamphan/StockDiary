@@ -96,12 +96,7 @@ public class DataFetch {
 
         List<StockItem> stockItems = new ArrayList<>();
 
-        int i = 0;
         for (String ticker : tickers) {
-            i++;
-            if (i > 100) {
-                continue;
-            }
             try {
                 Uri.Builder uriBuilder = ENDPOINT
                         .buildUpon()

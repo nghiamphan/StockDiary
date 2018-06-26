@@ -1,6 +1,7 @@
 package com.nphan.android.stockdiary;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +39,7 @@ public class WatchlistFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        new FetchWatchlistTask().execute();
     }
 
     @Nullable
@@ -70,6 +72,13 @@ public class WatchlistFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new FetchWatchlistTask().execute();
+        setupAdapter();
+    }
+
     private void setupAdapter() {
         if (isAdded()) {
             if (mAdapter == null) {
@@ -77,7 +86,8 @@ public class WatchlistFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
             }
             else {
-
+                mAdapter.setItems(mStockItems);
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -135,18 +145,17 @@ public class WatchlistFragment extends Fragment {
         }
     }
 
-    /*private class FetchDataTask extends AsyncTask<Void, Void, List<StockItem>> {
+    private class FetchWatchlistTask extends AsyncTask<Void, Void, List<StockItem>> {
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
-            List<StockItem> tickerAndNameList = new DataFetch().fetchStockTickerAndName();
-            return new DataFetch().fetchStockItem(tickers);
+            List<String> watchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
+            return new DataFetch().fetchStockItem(watchlistTickers);
         }
 
         @Override
         protected void onPostExecute(List<StockItem> items) {
             mStockItems = items;
-            StockSharedPreferences.setStockList(getActivity(), items);
             setupAdapter();
         }
-    }*/
+    }
 }
