@@ -22,6 +22,8 @@ public class DataFetch {
     private static final String STOCK = "stock";
     private static final String SYMBOLS = "symbols";
     private static final String QUOTE = "quote";
+    private static final String CHART = "chart";
+    private static final String ONE_DAY = "1d";
 
     private static final Uri ENDPOINT = Uri
             .parse("https://api.iextrading.com/1.0")
@@ -106,7 +108,6 @@ public class DataFetch {
                 String urlString = uriBuilder.toString();
                 String jsonString = getUrlString(urlString);
                 parseStockItem(stockItems, jsonString, ticker);
-                Log.i(TAG, ticker);
             }
             catch (IOException ioe) {
                 Log.e(TAG, "Failed to fetch items", ioe);
@@ -133,5 +134,59 @@ public class DataFetch {
         }
 
         stockItems.add(item);
+    }
+
+    private List<Float> fetchChartData(String ticker, String period) {
+        List<Float> prices = new ArrayList<>();
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(CHART)
+                    .appendPath(period);
+            String urlString = uriBuilder.toString();
+            String jsonString = getUrlString(urlString);
+            parseChartData(prices, jsonString);
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+        return prices;
+    }
+
+    public List<Float> fetchChartDataOneDay(String ticker) {
+        return fetchChartData(ticker, ONE_DAY);
+    }
+
+    private void parseChartData(List<Float> prices, String jsonString) throws JSONException {
+        JSONArray dataJsonArray = new JSONArray(jsonString);
+        Float price = null;
+        Float firstPrice = new Float(0);
+        for (int i = 0; i < dataJsonArray.length(); i++) {
+            JSONObject data = dataJsonArray.getJSONObject(i);
+            if (data.has("close")) {
+                if (price == null) {
+                    firstPrice = Float.valueOf(data.getString("close"));
+                }
+                price = Float.valueOf(data.getString("close"));
+            }
+            prices.add(price);
+        }
+
+        /*
+        If the first few values in "prices" are null, set them equal to the first non-null value
+         */
+        for (int i = 0; i < prices.size(); i++) {
+            if (prices.get(i) == null) {
+                prices.set(i, firstPrice);
+            }
+            else {
+                continue;
+            }
+        }
     }
 }

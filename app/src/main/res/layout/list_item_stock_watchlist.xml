@@ -12,6 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
+    <com.robinhood.spark.SparkView
+        android:id="@+id/graph_spark_view"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/stock_price"
         android:layout_width="50dp"

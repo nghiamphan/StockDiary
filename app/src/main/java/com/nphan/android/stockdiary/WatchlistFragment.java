@@ -16,12 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.robinhood.spark.SparkAdapter;
+import com.robinhood.spark.SparkView;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WatchlistFragment extends Fragment {
 
+    private List<String> mWatchlistTickers = new ArrayList<>();
     private List<StockItem> mStockItems = new ArrayList<>();
+    private HashMap<String, List> mPrices = new HashMap<>();
 
     private RecyclerView mRecyclerView;
     private StockItemAdapter mAdapter;
@@ -39,7 +45,15 @@ public class WatchlistFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        FetchTask();
+    }
+
+    private void FetchTask() {
+        mWatchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
         new FetchWatchlistTask().execute();
+        for (String ticker : mWatchlistTickers) {
+            new FetchDataChartTask().execute(ticker);
+        }
     }
 
     @Nullable
@@ -75,8 +89,7 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new FetchWatchlistTask().execute();
-        setupAdapter();
+        FetchTask();
     }
 
     private void setupAdapter() {
@@ -93,23 +106,29 @@ public class WatchlistFragment extends Fragment {
     }
 
     private class StockItemHolder extends RecyclerView.ViewHolder {
-        private TextView stockTickerTextView;
-        private TextView stockPriceTextView;
+        private TextView mStockTickerTextView;
+        private TextView mStockPriceTextView;
+        private SparkView mGraphSparkView;
 
         public StockItemHolder(View itemView) {
             super(itemView);
-            stockTickerTextView = itemView.findViewById(R.id.stock_ticker);
-            stockPriceTextView = itemView.findViewById(R.id.stock_price);
+            mStockTickerTextView = itemView.findViewById(R.id.stock_ticker);
+            mStockPriceTextView = itemView.findViewById(R.id.stock_price);
+            mGraphSparkView = itemView.findViewById(R.id.graph_spark_view);
         }
 
         public void bindItem(StockItem stockItem) {
-            stockTickerTextView.setText(stockItem.getTicker());
+            mStockTickerTextView.setText(stockItem.getTicker());
 
             if (stockItem.getPrice() == null) {
-                stockPriceTextView.setText(R.string.not_available);
+                mStockPriceTextView.setText(R.string.not_available);
             }
             else {
-                stockPriceTextView.setText(Float.toString(stockItem.getPrice()));
+                mStockPriceTextView.setText(Float.toString(stockItem.getPrice()));
+            }
+
+            if (mPrices.get(stockItem.getTicker()) != null) {
+                mGraphSparkView.setAdapter(new MySparkAdapter(mPrices.get(stockItem.getTicker())));
             }
         }
     }
@@ -146,16 +165,62 @@ public class WatchlistFragment extends Fragment {
     }
 
     private class FetchWatchlistTask extends AsyncTask<Void, Void, List<StockItem>> {
+        /*
+        Fetch ticker and last price
+         */
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
-            List<String> watchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
-            return new DataFetch().fetchStockItem(watchlistTickers);
+            return new DataFetch().fetchStockItem(mWatchlistTickers);
         }
 
         @Override
         protected void onPostExecute(List<StockItem> items) {
             mStockItems = items;
             setupAdapter();
+        }
+    }
+
+    private class FetchDataChartTask extends AsyncTask<String, Void, List<Float>> {
+        /*
+        Fetch prices to display chart
+         */
+        private String mTicker;
+        @Override
+        protected List<Float> doInBackground(String... strings) {
+            mTicker = strings[0];
+            return new DataFetch().fetchChartDataOneDay(mTicker);
+        }
+
+        @Override
+        protected void onPostExecute(List<Float> prices) {
+            mPrices.put(mTicker, prices);
+            setupAdapter();
+        }
+    }
+
+    public class MySparkAdapter extends SparkAdapter {
+        private List<Float> mPrices;
+
+        public MySparkAdapter(List<Float> prices) {
+            mPrices = prices;
+        }
+
+        @Override
+        public int getCount() {
+            return mPrices.size();
+        }
+
+        @Override
+        public Object getItem(int index) {
+            return mPrices.get(index);
+        }
+
+        @Override
+        public float getY(int index) {
+            if (mPrices.get(index) == null) {
+                return 0;
+            }
+            return mPrices.get(index);
         }
     }
 }
