@@ -132,6 +132,7 @@ public class WatchlistFragment extends Fragment {
             else {
                 mStockPriceButton.setText(Float.toString(stockItem.getPrice()));
             }
+            mStockPriceButton.setBackgroundColor(getResources().getColor(R.color.grey));
 
             if (mPrices.get(ticker) != null && mPreviousPrices.get(ticker) != null) {
                 List<Float> prices = mPrices.get(ticker);

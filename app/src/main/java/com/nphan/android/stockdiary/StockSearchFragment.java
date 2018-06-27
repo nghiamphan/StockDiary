@@ -91,20 +91,67 @@ public class StockSearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                List<StockItem> items = new ArrayList<>();
-                String query = newText.toLowerCase();
-                for (int i = 0; i < mPersistedStockList.size(); i++) {
-                    String ticker = mPersistedStockList.get(i).getTicker().toLowerCase();
-                    String name = mPersistedStockList.get(i).getCompanyName().toLowerCase();
-                    if (ticker.contains(query) || name.contains(query)) {
-                        items.add(mPersistedStockList.get(i));
-                    }
+                if (!newText.equals("")) {
+                    mStockItems = searchString(newText.toUpperCase());
                 }
-                mStockItems = items;
+                else {
+                    mStockItems = new ArrayList<>();
+                }
                 setupAdapter();
                 return true;
             }
         });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                getActivity().finish();
+                return false;
+            }
+        });
+    }
+
+    private List<StockItem> searchString(String query) {
+        /*
+        Search stock based on ticker and name, and return stocks based on relevance
+         */
+        List<StockItem> items = new ArrayList<>();
+        for (int i = 0; i < mPersistedStockList.size(); i++) {
+            StockItem stockItem = mPersistedStockList.get(i);
+            String ticker = stockItem.getTicker();
+            String name = stockItem.getCompanyName().toUpperCase();
+            if (!items.contains(stockItem)) {
+                if (ticker.equals(query)) {
+                    items.add(stockItem);
+                }
+                else if (query.length() == 2 && ticker.length() >= 2 && ticker.charAt(0) == query.charAt(0) && ticker.charAt(1) == query.charAt(1))
+                {
+                    items.add(stockItem);
+                }
+                else if (query.length() == 1 && ticker.charAt(0) == query.charAt(0)) {
+                    items.add(stockItem);
+                }
+                else if (name.equals(query)) {
+                    items.add(stockItem);
+                }
+            }
+        }
+
+        for (int i = 0; i < mPersistedStockList.size(); i++) {
+            StockItem stockItem = mPersistedStockList.get(i);
+            String ticker = stockItem.getTicker();
+            if (!items.contains(stockItem) && ticker.contains(query)) {
+                items.add(stockItem);
+            }
+        }
+        for (int i = 0; i < mPersistedStockList.size(); i++) {
+            StockItem stockItem = mPersistedStockList.get(i);
+            String name = stockItem.getCompanyName().toUpperCase();
+            if (!items.contains(stockItem) && name.contains(query)) {
+                items.add(stockItem);
+            }
+        }
+        return items;
     }
 
     @Override
