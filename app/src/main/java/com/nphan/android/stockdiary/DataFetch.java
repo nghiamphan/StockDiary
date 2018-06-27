@@ -22,6 +22,7 @@ public class DataFetch {
     private static final String STOCK = "stock";
     private static final String SYMBOLS = "symbols";
     private static final String QUOTE = "quote";
+    private static final String PREVIOUS = "previous";
     private static final String CHART = "chart";
     private static final String ONE_DAY = "1d";
 
@@ -188,5 +189,27 @@ public class DataFetch {
                 continue;
             }
         }
+    }
+
+    public Float fetchPreviousClose(String ticker) {
+        Float previousPrice = null;
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(PREVIOUS);
+            String urlString = uriBuilder.toString();
+            String jsonString = getUrlString(urlString);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            previousPrice = Float.valueOf(jsonObject.getString("close"));
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+        return previousPrice;
     }
 }

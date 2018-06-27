@@ -24,5 +24,9 @@
         <item name="android:layout_margin">12dp</item>
         <item name="android:background">@color/grey</item>
     </style>
+    
+    <style name="my_spark_view">
+        <item name="spark_lineWidth">1dp</item>
+    </style>
 
 </resources>
