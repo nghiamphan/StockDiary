@@ -1,4 +1,4 @@
-package com.nphan.android.stockdiary;
+package com.nphan.android.stockdiary.controller;
 
 import android.content.Intent;
 import android.graphics.DashPathEffect;
@@ -19,6 +19,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nphan.android.stockdiary.DataFetch;
+import com.nphan.android.stockdiary.R;
+import com.nphan.android.stockdiary.model.StockItem;
+import com.nphan.android.stockdiary.model.StockSharedPreferences;
+import com.nphan.android.stockdiary.model.StockSingleton;
 import com.robinhood.spark.SparkAdapter;
 import com.robinhood.spark.SparkView;
 

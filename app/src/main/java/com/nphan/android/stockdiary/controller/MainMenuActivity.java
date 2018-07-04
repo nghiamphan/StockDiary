@@ -1,4 +1,4 @@
-package com.nphan.android.stockdiary;
+package com.nphan.android.stockdiary.controller;
 
 import android.support.v4.app.Fragment;
 

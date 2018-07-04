@@ -1,4 +1,4 @@
-package com.nphan.android.stockdiary;
+package com.nphan.android.stockdiary.controller;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.nphan.android.stockdiary.R;
+import com.nphan.android.stockdiary.model.StockItem;
+import com.nphan.android.stockdiary.model.StockSharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;

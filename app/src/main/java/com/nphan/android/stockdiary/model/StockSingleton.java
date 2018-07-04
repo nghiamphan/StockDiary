@@ -1,4 +1,4 @@
-package com.nphan.android.stockdiary;
+package com.nphan.android.stockdiary.model;
 
 import android.content.Context;
 

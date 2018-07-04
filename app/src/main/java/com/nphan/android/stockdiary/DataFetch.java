@@ -3,6 +3,8 @@ package com.nphan.android.stockdiary;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nphan.android.stockdiary.model.StockItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
