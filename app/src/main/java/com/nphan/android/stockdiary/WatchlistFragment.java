@@ -28,10 +28,22 @@ import java.util.List;
 
 public class WatchlistFragment extends Fragment {
 
+    /*
+    mStockItems: the list of stocks to be displayed in RecyclerView; each item contains ticker and last price information
+
+    mChartPrices:
+    - key: ticker
+    - value: list of prices for charting
+
+    mPreviousPrices:
+    - key: ticker
+    - value: list of prices for previous day
+     */
+
     private List<String> mWatchlistTickers = new ArrayList<>();
     private List<StockItem> mStockItems = new ArrayList<>();
-    private HashMap<String, List> mPrices = new HashMap<>();
-    private HashMap<String, Float> mPreviousPrices = new HashMap<>();
+    private HashMap<String, List> mChartPrices;
+    private HashMap<String, Float> mPreviousPrices;
 
     private RecyclerView mRecyclerView;
     private StockItemAdapter mAdapter;
@@ -49,15 +61,23 @@ public class WatchlistFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mChartPrices = StockSingleton.get(getActivity()).getChartPrices();
+        mPreviousPrices = StockSingleton.get(getActivity()).getPreviousPrices();
         FetchTask();
     }
 
     private void FetchTask() {
         mWatchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
-        new FetchWatchlistTask().execute();
+        new FetchWatchlistLastPriceTask().execute();
+
         for (String ticker : mWatchlistTickers) {
-            new FetchDataChartTask().execute(ticker);
-            new FetchPreviousPriceTask().execute(ticker);
+            if (!mPreviousPrices.containsKey(ticker) || mPreviousPrices.get(ticker) == null) {
+                new FetchDataChartTask().execute(ticker);
+            }
+
+            if (!mChartPrices.containsKey(ticker) || mChartPrices.get(ticker) == null) {
+                new FetchPreviousPriceTask().execute(ticker);
+            }
         }
     }
 
@@ -134,8 +154,12 @@ public class WatchlistFragment extends Fragment {
             }
             mStockPriceButton.setBackgroundColor(getResources().getColor(R.color.grey));
 
-            if (mPrices.get(ticker) != null && mPreviousPrices.get(ticker) != null) {
-                List<Float> prices = mPrices.get(ticker);
+            if (mChartPrices.get(ticker) != null && mPreviousPrices.get(ticker) != null) {
+                List<Float> prices = mChartPrices.get(ticker);
+                if (prices.size() == 0) {
+                    return;
+                }
+
                 mGraphSparkView.setAdapter(new MySparkAdapter(ticker, prices));
 
                 int colorId = R.color.green;
@@ -184,7 +208,7 @@ public class WatchlistFragment extends Fragment {
         }
     }
 
-    private class FetchWatchlistTask extends AsyncTask<Void, Void, List<StockItem>> {
+    private class FetchWatchlistLastPriceTask extends AsyncTask<Void, Void, List<StockItem>> {
         /*
         Fetch ticker and last price
          */
@@ -214,7 +238,7 @@ public class WatchlistFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Float> prices) {
-            mPrices.put(mTicker, prices);
+            mChartPrices.put(mTicker, prices);
             setupAdapter();
         }
     }
