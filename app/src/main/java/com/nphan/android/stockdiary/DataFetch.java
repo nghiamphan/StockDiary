@@ -27,6 +27,7 @@ public class DataFetch {
     private static final String PREVIOUS = "previous";
     private static final String CHART = "chart";
     private static final String ONE_DAY = "1d";
+    private static final String COMPANY = "company";
 
     private static final Uri ENDPOINT = Uri
             .parse("https://api.iextrading.com/1.0")
@@ -226,5 +227,39 @@ public class DataFetch {
         return previousPrice;
     }
 
+    public StockItem fetchCompanyInfo(String ticker) {
+        /*
+        Fetch company information: company name, sector, industry, CEO, description
+         */
 
+        StockItem stockItem = new StockItem();
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(COMPANY);
+            String urlString = uriBuilder.toString();
+            String jsonString = getUrlString(urlString);
+            parseCompanyInfo(stockItem, jsonString);
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+
+        return stockItem;
+    }
+
+    private void parseCompanyInfo(StockItem stockItem, String jsonString) throws JSONException{
+        JSONObject companyObject = new JSONObject(jsonString);
+        stockItem.setCompanyName(companyObject.getString("companyName"));
+        stockItem.setSector(companyObject.getString("sector"));
+        stockItem.setIndustry(companyObject.getString("industry"));
+        stockItem.setCEO(companyObject.getString("CEO"));
+        stockItem.setExchange(companyObject.getString("exchange"));
+        stockItem.setDescription(companyObject.getString("description"));
+    }
 }

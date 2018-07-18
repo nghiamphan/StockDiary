@@ -5,4 +5,8 @@
     <string name="portfolio">Portfolio</string>
     <string name="diary">Diary</string>
     <string name="not_available">N/A</string>
+    <string name="sector">SECTOR</string>
+    <string name="industry">INDUSTRY</string>
+    <string name="CEO">CEO</string>
+    <string name="exchange">EXCHANGE</string>
 </resources>

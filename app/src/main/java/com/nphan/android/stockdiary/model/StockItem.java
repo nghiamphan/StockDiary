@@ -8,7 +8,9 @@ public class StockItem {
     private Float mChangePercent;
     private String mSector;
     private String mIndustry;
+    private String mDescription;
     private String mCEO;
+    private String mExchange;
     private Float mBeta;
     private Float mMarketCap;
     private Float mPERatio;
@@ -46,5 +48,173 @@ public class StockItem {
 
     public void setPrice(Float price) {
         this.mPrice = price;
+    }
+
+    public Float getChangeToday() {
+        return mChangeToday;
+    }
+
+    public void setChangeToday(Float changeToday) {
+        mChangeToday = changeToday;
+    }
+
+    public Float getChangePercent() {
+        return mChangePercent;
+    }
+
+    public void setChangePercent(Float changePercent) {
+        mChangePercent = changePercent;
+    }
+
+    public String getSector() {
+        return mSector;
+    }
+
+    public void setSector(String sector) {
+        mSector = sector;
+    }
+
+    public String getIndustry() {
+        return mIndustry;
+    }
+
+    public void setIndustry(String industry) {
+        mIndustry = industry;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public String getCEO() {
+        return mCEO;
+    }
+
+    public void setCEO(String CEO) {
+        mCEO = CEO;
+    }
+
+    public String getExchange() {
+        return mExchange;
+    }
+
+    public void setExchange(String exchange) {
+        mExchange = exchange;
+    }
+
+    public Float getBeta() {
+        return mBeta;
+    }
+
+    public void setBeta(Float beta) {
+        mBeta = beta;
+    }
+
+    public Float getMarketCap() {
+        return mMarketCap;
+    }
+
+    public void setMarketCap(Float marketCap) {
+        mMarketCap = marketCap;
+    }
+
+    public Float getPERatio() {
+        return mPERatio;
+    }
+
+    public void setPERatio(Float PERatio) {
+        mPERatio = PERatio;
+    }
+
+    public Float getMlatestEPS() {
+        return mlatestEPS;
+    }
+
+    public void setMlatestEPS(Float mlatestEPS) {
+        this.mlatestEPS = mlatestEPS;
+    }
+
+    public Float getMlatestEPSDate() {
+        return mlatestEPSDate;
+    }
+
+    public void setMlatestEPSDate(Float mlatestEPSDate) {
+        this.mlatestEPSDate = mlatestEPSDate;
+    }
+
+    public Float getDividendYield() {
+        return mDividendYield;
+    }
+
+    public void setDividendYield(Float dividendYield) {
+        mDividendYield = dividendYield;
+    }
+
+    public Float getAvgVolume() {
+        return mAvgVolume;
+    }
+
+    public void setAvgVolume(Float avgVolume) {
+        mAvgVolume = avgVolume;
+    }
+
+    public Float getHighToday() {
+        return mHighToday;
+    }
+
+    public void setHighToday(Float highToday) {
+        mHighToday = highToday;
+    }
+
+    public Float getLowToday() {
+        return mLowToday;
+    }
+
+    public void setLowToday(Float lowToday) {
+        mLowToday = lowToday;
+    }
+
+    public Float getOpen() {
+        return mOpen;
+    }
+
+    public void setOpen(Float open) {
+        mOpen = open;
+    }
+
+    public Float getVolume() {
+        return mVolume;
+    }
+
+    public void setVolume(Float volume) {
+        mVolume = volume;
+    }
+
+    public Float getM52WeekHigh() {
+        return m52WeekHigh;
+    }
+
+    public void setM52WeekHigh(Float m52WeekHigh) {
+        this.m52WeekHigh = m52WeekHigh;
+    }
+
+    public Float getM52WeekLow() {
+        return m52WeekLow;
+    }
+
+    public void setM52WeekLow(Float m52WeekLow) {
+        this.m52WeekLow = m52WeekLow;
+    }
+
+    public Float getPriceToBook() {
+        return mPriceToBook;
+    }
+
+    public void setPriceToBook(Float priceToBook) {
+        mPriceToBook = priceToBook;
     }
 }

@@ -2,7 +2,6 @@ package com.nphan.android.stockdiary.model;
 
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +10,10 @@ public class StockSingleton {
     private static StockSingleton sStockSingleton;
 
     /*
+    mCachedStockItems: temporarily store StockItem object whose stock details have been fetched in StockDetailActivity
+    - key: ticker
+    - value: StockItem object
+
     mChartPrices:
     - key: ticker
     - value: list of prices for charting
@@ -20,7 +23,7 @@ public class StockSingleton {
     - value: list of prices for previous day
      */
 
-    private List<StockItem> mWatchlistStockItems = new ArrayList<>();
+    private HashMap<String, StockItem> mCachedStockItems = new HashMap<>();
     private HashMap<String, List> mChartPrices = new HashMap<>();
     private HashMap<String, Float> mPreviousPrices = new HashMap<>();
 
@@ -34,8 +37,8 @@ public class StockSingleton {
         return sStockSingleton;
     }
 
-    public List<StockItem> getWatchlistStockItems() {
-        return mWatchlistStockItems;
+    public HashMap<String, StockItem> getCachedStockItems() {
+        return mCachedStockItems;
     }
 
     public HashMap<String, List> getChartPrices() {
