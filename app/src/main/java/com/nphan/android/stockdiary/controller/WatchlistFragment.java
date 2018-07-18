@@ -135,7 +135,7 @@ public class WatchlistFragment extends Fragment {
         }
     }
 
-    private class StockItemHolder extends RecyclerView.ViewHolder {
+    private class StockItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mStockTickerTextView;
         private Button mStockPriceButton;
         private SparkView mGraphSparkView;
@@ -145,6 +145,7 @@ public class WatchlistFragment extends Fragment {
             mStockTickerTextView = itemView.findViewById(R.id.stock_ticker);
             mStockPriceButton = itemView.findViewById(R.id.stock_price);
             mGraphSparkView = itemView.findViewById(R.id.graph_spark_view);
+            itemView.setOnClickListener(this);
         }
 
         public void bindItem(StockItem stockItem) {
@@ -179,6 +180,12 @@ public class WatchlistFragment extends Fragment {
                 DashPathEffect dashPathEffect = new DashPathEffect(new float[] {5, 10}, 0);
                 baseLinePaint.setPathEffect(dashPathEffect);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = StockDetailActivity.newIntent(getActivity(), (String) mStockTickerTextView.getText());
+            startActivity(intent);
         }
     }
 
@@ -219,7 +226,7 @@ public class WatchlistFragment extends Fragment {
          */
         @Override
         protected List<StockItem> doInBackground(Void... voids) {
-            return new DataFetch().fetchStockItem(mWatchlistTickers);
+            return new DataFetch().fetchCompanyNameAndPrice(mWatchlistTickers);
         }
 
         @Override

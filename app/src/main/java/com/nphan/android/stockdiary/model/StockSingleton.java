@@ -2,6 +2,7 @@ package com.nphan.android.stockdiary.model;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class StockSingleton {
     - value: list of prices for previous day
      */
 
+    private List<StockItem> mWatchlistStockItems = new ArrayList<>();
     private HashMap<String, List> mChartPrices = new HashMap<>();
     private HashMap<String, Float> mPreviousPrices = new HashMap<>();
 
@@ -30,6 +32,10 @@ public class StockSingleton {
             sStockSingleton = new StockSingleton(context);
         }
         return sStockSingleton;
+    }
+
+    public List<StockItem> getWatchlistStockItems() {
+        return mWatchlistStockItems;
     }
 
     public HashMap<String, List> getChartPrices() {

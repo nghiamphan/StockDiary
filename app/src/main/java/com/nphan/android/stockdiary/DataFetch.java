@@ -97,7 +97,10 @@ public class DataFetch {
         }
     }
 
-    public List<StockItem> fetchStockItem(List<String> tickers) {
+    public List<StockItem> fetchCompanyNameAndPrice(List<String> tickers) {
+        /*
+        Given a list of tickers, get company names and prices.
+         */
 
         List<StockItem> stockItems = new ArrayList<>();
 
@@ -110,7 +113,7 @@ public class DataFetch {
                         .appendPath(QUOTE);
                 String urlString = uriBuilder.toString();
                 String jsonString = getUrlString(urlString);
-                parseStockItem(stockItems, jsonString, ticker);
+                parseCompanyNameAndPrice(stockItems, jsonString, ticker);
             }
             catch (IOException ioe) {
                 Log.e(TAG, "Failed to fetch items", ioe);
@@ -123,7 +126,7 @@ public class DataFetch {
         return stockItems;
     }
 
-    private void parseStockItem(List<StockItem> stockItems, String jsonString, String ticker) throws JSONException{
+    private void parseCompanyNameAndPrice(List<StockItem> stockItems, String jsonString, String ticker) throws JSONException{
         JSONObject jsonObject = new JSONObject(jsonString);
         StockItem item = new StockItem();
         item.setTicker(ticker);
@@ -140,6 +143,10 @@ public class DataFetch {
     }
 
     private List<Float> fetchChartData(String ticker, String period) {
+        /*
+        Given a ticker and period, get that ticker's stock price in that time period
+         */
+
         List<Float> prices = new ArrayList<>();
         try {
             Uri.Builder uriBuilder = ENDPOINT
@@ -194,6 +201,10 @@ public class DataFetch {
     }
 
     public Float fetchPreviousClose(String ticker) {
+        /*
+        Fetch previous closed price
+         */
+
         Float previousPrice = null;
         try {
             Uri.Builder uriBuilder = ENDPOINT
@@ -214,4 +225,6 @@ public class DataFetch {
         }
         return previousPrice;
     }
+
+
 }
