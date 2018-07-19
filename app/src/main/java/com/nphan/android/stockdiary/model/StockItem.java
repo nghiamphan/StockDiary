@@ -26,6 +26,16 @@ public class StockItem {
     private Float m52WeekLow;
     private Float mPriceToBook;
 
+    public StockItem () {
+        mCompanyName = "_";
+        mPrice = new Float(0);
+        mSector = "_";
+        mIndustry = "_";
+        mDescription = "_";
+        mCEO = "_";
+        mExchange = "_";
+    }
+
     public String getTicker() {
         return mTicker;
     }

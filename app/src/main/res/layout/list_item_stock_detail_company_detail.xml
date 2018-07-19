@@ -1,52 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/ticker"
+        android:id="@+id/company_detail_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Ticker"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/about"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/company_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Company Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker" />
-
-    <TextView
-        android:id="@+id/last_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Price"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company_name" />
-
-    <com.robinhood.spark.SparkView
-        android:id="@+id/graph_spark_view"
-        style="@style/my_spark_view"
-        android:layout_width="wrap_content"
-        android:layout_height="160dp"
-        app:layout_constraintEnd_toStartOf="@+id/stock_price"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/stock_ticker"
-        app:layout_constraintTop_toBottomOf="@+id/last_price" />
 
     <TextView
         android:id="@+id/sector_label"
@@ -56,7 +24,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/sector"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph_spark_view" />
+        app:layout_constraintTop_toBottomOf="@+id/company_detail_label" />
 
     <TextView
         android:id="@+id/sector"
@@ -99,7 +67,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/CEO"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph_spark_view" />
+        app:layout_constraintTop_toBottomOf="@+id/company_detail_label" />
 
     <TextView
         android:id="@+id/CEO"
@@ -138,10 +106,12 @@
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="Description"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/industry" />
