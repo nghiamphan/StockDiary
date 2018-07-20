@@ -14,8 +14,8 @@ public class StockItem {
     private Float mBeta;
     private Float mMarketCap;
     private Float mPERatio;
-    private Float mlatestEPS;
-    private Float mlatestEPSDate;
+    private Float mLatestEPS;
+    private Float mLatestEPSDate;
     private Float mDividendYield;
     private Float mAvgVolume;
     private Float mHighToday;
@@ -27,13 +27,30 @@ public class StockItem {
     private Float mPriceToBook;
 
     public StockItem () {
-        mCompanyName = "_";
         mPrice = new Float(0);
+
+        mCompanyName = "_";
         mSector = "_";
         mIndustry = "_";
-        mDescription = "_";
         mCEO = "_";
         mExchange = "_";
+        mDescription = "_";
+
+        mOpen = new Float(0);
+        mHighToday = new Float(0);
+        mLowToday = new Float(0);
+        m52WeekHigh = new Float(0);
+        m52WeekLow = new Float(0);
+        mAvgVolume = new Float(0);
+        mVolume = new Float(0);
+
+        mMarketCap = new Float(0);
+        mBeta = new Float(0);
+        mLatestEPS = new Float(0);
+        mLatestEPSDate = new Float(0);
+        mDividendYield = new Float(0);
+        mPERatio = new Float(0);
+        mPriceToBook = new Float(0);
     }
 
     public String getTicker() {
@@ -140,20 +157,20 @@ public class StockItem {
         mPERatio = PERatio;
     }
 
-    public Float getMlatestEPS() {
-        return mlatestEPS;
+    public Float getLatestEPS() {
+        return mLatestEPS;
     }
 
-    public void setMlatestEPS(Float mlatestEPS) {
-        this.mlatestEPS = mlatestEPS;
+    public void setLatestEPS(Float latestEPS) {
+        this.mLatestEPS = latestEPS;
     }
 
-    public Float getMlatestEPSDate() {
-        return mlatestEPSDate;
+    public Float getLatestEPSDate() {
+        return mLatestEPSDate;
     }
 
-    public void setMlatestEPSDate(Float mlatestEPSDate) {
-        this.mlatestEPSDate = mlatestEPSDate;
+    public void setLatestEPSDate(Float latestEPSDate) {
+        this.mLatestEPSDate = latestEPSDate;
     }
 
     public Float getDividendYield() {

@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:text="_"
+        android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="@+id/sector_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sector_label" />
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:text="_"
+        android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="@+id/industry_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/industry_label" />
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
-        android:text="_"
+        android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/CEO_label"
         app:layout_constraintTop_toBottomOf="@+id/CEO_label" />
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginTop="8dp"
-        android:text="_"
+        android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/exchange_label"
         app:layout_constraintTop_toBottomOf="@+id/exchange_label" />

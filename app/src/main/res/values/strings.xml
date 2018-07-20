@@ -5,9 +5,26 @@
     <string name="portfolio">Portfolio</string>
     <string name="diary">Diary</string>
     <string name="not_available">N/A</string>
+    <string name="place_holder">_</string>
+
     <string name="about">ABOUT</string>
     <string name="sector">SECTOR</string>
     <string name="industry">INDUSTRY</string>
     <string name="CEO">CEO</string>
     <string name="exchange">EXCHANGE</string>
+
+    <string name="open_price">OPEN</string>
+    <string name="high_price">HIGH</string>
+    <string name="low_price">LOW</string>
+    <string name="year_high_price">52W HIGH</string>
+    <string name="year_low_price">52W LOW</string>
+    <string name="volume">VOLUME</string>
+    <string name="average_volume">AVG VOLUME</string>
+    <string name="market_cap">MARKET CAP</string>
+    <string name="beta">BETA</string>
+    <string name="eps">EPS</string>
+    <string name="eps_date">EPS DATE</string>
+    <string name="dividend_yield">DIV. YIELD</string>
+    <string name="price_earning">P/E</string>
+    <string name="price_to_book">PRICE/BOOK</string>
 </resources>

@@ -128,7 +128,7 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         public int getItemCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -138,6 +138,9 @@ public class StockDetailFragment extends Fragment{
                 viewType = R.layout.list_item_stock_detail_graph;
             }
             else if (position == 2) {
+                viewType = R.layout.list_item_stock_detail_key_stats;
+            }
+            else if (position == 3) {
                 viewType = R.layout.list_item_stock_detail_company_detail;
             }
             return viewType;
