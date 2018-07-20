@@ -28,6 +28,7 @@ public class DataFetch {
     private static final String CHART = "chart";
     private static final String ONE_DAY = "1d";
     private static final String COMPANY = "company";
+    private static final String STATS = "stats";
 
     private static final Uri ENDPOINT = Uri
             .parse("https://api.iextrading.com/1.0")
@@ -261,5 +262,86 @@ public class DataFetch {
         stockItem.setCEO(companyObject.getString("CEO"));
         stockItem.setExchange(companyObject.getString("exchange"));
         stockItem.setDescription(companyObject.getString("description"));
+    }
+
+    public StockItem fetchKeyStats(String ticker) {
+        /*
+        Fetch key stats: 52w high, 52w low, beta, eps, eps date, dividend yield, price to book
+         */
+
+        StockItem stockItem = new StockItem();
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(STATS);
+            String uriString = uriBuilder.toString();
+            String jsonString = getUrlString(uriString);
+            parseKeyStats(stockItem, jsonString);
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+
+        return stockItem;
+    }
+
+    private void parseKeyStats(StockItem stockItem, String jsonString) throws JSONException {
+        JSONObject companyObject = new JSONObject(jsonString);
+        stockItem.set52WeekHigh(Float.valueOf(companyObject.getString("week52high")));
+        stockItem.set52WeekLow(Float.valueOf(companyObject.getString("week52low")));
+        stockItem.setBeta(Float.valueOf(companyObject.getString("beta")));
+        stockItem.setLatestEPS(Float.valueOf(companyObject.getString("latestEPS")));
+        stockItem.setLatestEPSDate(companyObject.getString("latestEPSDate"));
+        stockItem.setDividendYield(Float.valueOf(companyObject.getString("dividendYield")));
+        if (!companyObject.isNull("priceToBook")) {
+            stockItem.setPriceToBook(Float.valueOf(companyObject.getString("priceToBook")));
+        }
+    }
+
+    public StockItem fetchStockQuote(String ticker) {
+        /*
+        Fetch key stats: open, high, low, volume, avg volume, market cap, pe ratio, price, change, change percent
+         */
+
+        StockItem stockItem = new StockItem();
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(QUOTE);
+            String uriString = uriBuilder.toString();
+            String jsonString = getUrlString(uriString);
+            parseStockQuote(stockItem, jsonString);
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+
+        return stockItem;
+    }
+
+    private void parseStockQuote(StockItem stockItem, String jsonString) throws JSONException {
+        JSONObject companyObject = new JSONObject(jsonString);
+
+        stockItem.setPrice(Float.valueOf(companyObject.getString("latestPrice")));
+        stockItem.setChangeToday(Float.valueOf(companyObject.getString("change")));
+        stockItem.setChangePercent(Float.valueOf(companyObject.getString("changePercent")));
+
+        stockItem.setOpen(Float.valueOf(companyObject.getString("open")));
+        stockItem.setHighToday(Float.valueOf(companyObject.getString("high")));
+        stockItem.setLowToday(Float.valueOf(companyObject.getString("low")));
+        stockItem.setVolume(Float.valueOf(companyObject.getString("latestVolume")));
+        stockItem.setAvgVolume(Float.valueOf(companyObject.getString("avgTotalVolume")));
+        stockItem.setMarketCap(Float.valueOf(companyObject.getString("marketCap")));
+        stockItem.setPERatio(Float.valueOf(companyObject.getString("peRatio")));
     }
 }

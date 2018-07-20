@@ -15,7 +15,7 @@ public class StockItem {
     private Float mMarketCap;
     private Float mPERatio;
     private Float mLatestEPS;
-    private Float mLatestEPSDate;
+    private String mLatestEPSDate;
     private Float mDividendYield;
     private Float mAvgVolume;
     private Float mHighToday;
@@ -28,6 +28,8 @@ public class StockItem {
 
     public StockItem () {
         mPrice = new Float(0);
+        mChangeToday = new Float(0);
+        mChangePercent = new Float(0);
 
         mCompanyName = "_";
         mSector = "_";
@@ -47,7 +49,7 @@ public class StockItem {
         mMarketCap = new Float(0);
         mBeta = new Float(0);
         mLatestEPS = new Float(0);
-        mLatestEPSDate = new Float(0);
+        mLatestEPSDate = "_";
         mDividendYield = new Float(0);
         mPERatio = new Float(0);
         mPriceToBook = new Float(0);
@@ -165,11 +167,11 @@ public class StockItem {
         this.mLatestEPS = latestEPS;
     }
 
-    public Float getLatestEPSDate() {
+    public String  getLatestEPSDate() {
         return mLatestEPSDate;
     }
 
-    public void setLatestEPSDate(Float latestEPSDate) {
+    public void setLatestEPSDate(String latestEPSDate) {
         this.mLatestEPSDate = latestEPSDate;
     }
 
@@ -221,19 +223,19 @@ public class StockItem {
         mVolume = volume;
     }
 
-    public Float getM52WeekHigh() {
+    public Float get52WeekHigh() {
         return m52WeekHigh;
     }
 
-    public void setM52WeekHigh(Float m52WeekHigh) {
+    public void set52WeekHigh(Float m52WeekHigh) {
         this.m52WeekHigh = m52WeekHigh;
     }
 
-    public Float getM52WeekLow() {
+    public Float get52WeekLow() {
         return m52WeekLow;
     }
 
-    public void setM52WeekLow(Float m52WeekLow) {
+    public void set52WeekLow(Float m52WeekLow) {
         this.m52WeekLow = m52WeekLow;
     }
 
