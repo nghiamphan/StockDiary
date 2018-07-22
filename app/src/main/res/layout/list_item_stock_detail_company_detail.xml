@@ -3,28 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/company_detail_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/about"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/white_smoke"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/company_detail_label" />
+
     <TextView
         android:id="@+id/sector_label"
-        android:layout_width="168dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/sector"
+        android:textColor="@color/lighter_grey"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company_detail_label" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
 
     <TextView
         android:id="@+id/sector"
@@ -35,7 +58,8 @@
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="@+id/sector_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sector_label" />
+        app:layout_constraintTop_toBottomOf="@+id/sector_label"
+        tools:text="Sector" />
 
     <TextView
         android:id="@+id/industry_label"
@@ -44,6 +68,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/industry"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintEnd_toEndOf="@+id/sector"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sector" />
@@ -55,19 +80,24 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/place_holder"
+        app:layout_constraintBottom_toBottomOf="@+id/exchange"
         app:layout_constraintEnd_toEndOf="@+id/industry_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/industry_label" />
+        app:layout_constraintTop_toBottomOf="@+id/industry_label"
+        tools:text="Industry" />
 
     <TextView
         android:id="@+id/CEO_label"
-        android:layout_width="168dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/CEO"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company_detail_label" />
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
 
     <TextView
         android:id="@+id/CEO"
@@ -78,7 +108,8 @@
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/CEO_label"
-        app:layout_constraintTop_toBottomOf="@+id/CEO_label" />
+        app:layout_constraintTop_toBottomOf="@+id/CEO_label"
+        tools:text="CEO" />
 
     <TextView
         android:id="@+id/exchange_label"
@@ -87,6 +118,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/exchange"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/CEO"
         app:layout_constraintTop_toBottomOf="@+id/CEO" />
@@ -100,7 +132,8 @@
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/exchange_label"
-        app:layout_constraintTop_toBottomOf="@+id/exchange_label" />
+        app:layout_constraintTop_toBottomOf="@+id/exchange_label"
+        tools:text="Exchange" />
 
     <TextView
         android:id="@+id/description"
@@ -110,10 +143,11 @@
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:text="Description"
+        android:text="@string/place_holder"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/industry" />
+        app:layout_constraintTop_toBottomOf="@+id/industry"
+        tools:text="Description" />
 
 </android.support.constraint.ConstraintLayout>

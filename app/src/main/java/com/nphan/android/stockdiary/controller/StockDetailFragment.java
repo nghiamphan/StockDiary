@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +18,12 @@ import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
 import com.nphan.android.stockdiary.R;
+import com.nphan.android.stockdiary.helper.NumberFormatHelper;
 import com.nphan.android.stockdiary.model.StockItem;
 import com.nphan.android.stockdiary.model.StockSingleton;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class StockDetailFragment extends Fragment{
 
@@ -29,6 +35,7 @@ public class StockDetailFragment extends Fragment{
     private String mTicker;
 
     private RecyclerView mRecyclerView;
+    private RecyclerAdapter mRecyclerAdapter;
 
     private TextView mTickerTextView;
     private TextView mCompanyNameTextView;
@@ -71,7 +78,9 @@ public class StockDetailFragment extends Fragment{
         super.onCreate(savedInstanceState);
 
         mCachedStockItems = StockSingleton.get(getActivity()).getCachedStockItems();
-        mTicker = getArguments().getString(ARG_TICKER);
+        if (getArguments() != null) {
+            mTicker = getArguments().getString(ARG_TICKER);
+        }
         if (!mCachedStockItems.containsKey(mTicker)) {
             mStockItem = new StockItem();
             mStockItem.setTicker(mTicker);
@@ -91,17 +100,32 @@ public class StockDetailFragment extends Fragment{
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new RecyclerAdapter());
+        setupAdapter();
 
         return view;
     }
 
+    private void setupAdapter() {
+        if (mRecyclerAdapter == null) {
+            mRecyclerAdapter = new RecyclerAdapter();
+            mRecyclerView.setAdapter(mRecyclerAdapter);
+        }
+        else {
+            mRecyclerAdapter.notifyDataSetChanged();
+        }
+    }
+
     private class RecyclerHolder extends RecyclerView.ViewHolder {
+
+        private int mLayoutId;
 
         public RecyclerHolder(LayoutInflater inflater, ViewGroup parent, int layoutId) {
             super(inflater.inflate(layoutId, parent, false));
+            mLayoutId = layoutId;
+        }
 
-            if (layoutId == R.layout.list_item_stock_detail_title) {
+        private void bind() {
+            if (mLayoutId == R.layout.list_item_stock_detail_title) {
                 mTickerTextView = itemView.findViewById(R.id.ticker);
                 mTickerTextView.setText(mTicker);
 
@@ -109,13 +133,29 @@ public class StockDetailFragment extends Fragment{
                 mCompanyNameTextView.setText(mStockItem.getCompanyName());
 
                 mPriceTextView = itemView.findViewById(R.id.last_price);
-                mPriceTextView.setText(mStockItem.getPrice().toString());
+
+                Spannable spannableString = new SpannableString(String.format(Locale.US,"$%.2f", mStockItem.getPrice()));
+                spannableString.setSpan(new RelativeSizeSpan(0.7f), 0 , 1, 0);
+                mPriceTextView.setText(spannableString);
 
                 mPriceChangeTextView = itemView.findViewById(R.id.price_change);
-                mPriceChangeTextView.setText(mStockItem.getChangeToday() + " (" + mStockItem.getChangePercent() + ")");
+                String changePrefix;
+                if (mStockItem.getChangeToday() < 0) {
+                    changePrefix = "-";
+                }
+                else {
+                    changePrefix = "+";
+                }
+                mPriceChangeTextView.setText(String.format(Locale.US, changePrefix + "$%.2f" + "  " + "(%.2f%%)", Math.abs(mStockItem.getChangeToday()), mStockItem.getChangePercent()*100));
+                if (mStockItem.getChangeToday() < 0) {
+                    mPriceChangeTextView.setTextColor(getResources().getColor(R.color.red));
+                }
+                else {
+                    mPriceChangeTextView.setTextColor(getResources().getColor(R.color.green));
+                }
             }
 
-            if (layoutId == R.layout.list_item_stock_detail_key_stats) {
+            else if (mLayoutId == R.layout.list_item_stock_detail_key_stats) {
                 mOpenTextView = itemView.findViewById(R.id.open_price);
                 mHighTextView = itemView.findViewById(R.id.high_price);
                 mLowTextView = itemView.findViewById(R.id.low_price);
@@ -132,24 +172,24 @@ public class StockDetailFragment extends Fragment{
                 mPriceEarningTextView = itemView.findViewById(R.id.price_earning);
                 mPriceToBookTextView = itemView.findViewById(R.id.price_to_book);
 
-                mOpenTextView.setText(mStockItem.getOpen().toString());
-                mHighTextView.setText(mStockItem.getHighToday().toString());
-                mLowTextView.setText(mStockItem.getLowToday().toString());
-                m52WeekHighTextView.setText(mStockItem.get52WeekHigh().toString());
-                m52WeekLowTextView.setText(mStockItem.get52WeekLow().toString());
-                mVolumeTextView.setText(mStockItem.getVolume().toString());
-                mAvgVolumeTextView.setText(mStockItem.getAvgVolume().toString());
+                mOpenTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getOpen()));
+                mHighTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getHighToday()));
+                mLowTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getLowToday()));
+                m52WeekHighTextView.setText(String.format(Locale.US, "%.2f", mStockItem.get52WeekHigh()));
+                m52WeekLowTextView.setText(String.format(Locale.US, "%.2f", mStockItem.get52WeekLow()));
+                mVolumeTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getVolume()));
+                mAvgVolumeTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getAvgVolume()));
 
-                mMarketCapTextView.setText(mStockItem.getMarketCap().toString());
-                mBetaTextView.setText(mStockItem.getBeta().toString());
-                mEpsTextView.setText(mStockItem.getLatestEPS().toString());
+                mMarketCapTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getMarketCap()));
+                mBetaTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getBeta()));
+                mEpsTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getLatestEPS()));
                 mEpsDateTextView.setText(mStockItem.getLatestEPSDate());
-                mDividendYieldTextView.setText(mStockItem.getDividendYield().toString());
-                mPriceEarningTextView.setText(mStockItem.getPERatio().toString());
-                mPriceToBookTextView.setText(mStockItem.getPriceToBook().toString());
+                mDividendYieldTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getDividendYield()));
+                mPriceEarningTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPERatio()));
+                mPriceToBookTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPriceToBook()));
             }
 
-            else if (layoutId == R.layout.list_item_stock_detail_company_detail) {
+            else if (mLayoutId == R.layout.list_item_stock_detail_company_detail) {
                 mSectorTextView = itemView.findViewById(R.id.sector);
                 mIndustryTextView = itemView.findViewById(R.id.industry);
                 mCEOTextView = itemView.findViewById(R.id.CEO);
@@ -162,7 +202,6 @@ public class StockDetailFragment extends Fragment{
                 mExchangeTextView.setText(mStockItem.getExchange());
                 mDescriptionTextView.setText(mStockItem.getDescription());
             }
-
         }
     }
 
@@ -177,7 +216,7 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
-
+            holder.bind();
         }
 
         @Override
@@ -213,7 +252,7 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         protected void onPostExecute(StockItem stockItem) {
-            mRecyclerView.setAdapter(new RecyclerAdapter());
+            setupAdapter();
 
             mStockItem.setCompanyName(stockItem.getCompanyName());
             mStockItem.setSector(stockItem.getSector());
@@ -238,7 +277,7 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         protected void onPostExecute(StockItem stockItem) {
-            mRecyclerView.setAdapter(new RecyclerAdapter());
+            setupAdapter();
 
             mStockItem.set52WeekHigh(stockItem.get52WeekHigh());
             mStockItem.set52WeekLow(stockItem.get52WeekLow());
@@ -264,7 +303,8 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         protected void onPostExecute(StockItem stockItem) {
-            mRecyclerView.setAdapter(new RecyclerAdapter());
+            setupAdapter();
+            Log.i("HIH", "updated");
 
             mStockItem.setPrice(stockItem.getPrice());
             mStockItem.setChangeToday(stockItem.getChangeToday());

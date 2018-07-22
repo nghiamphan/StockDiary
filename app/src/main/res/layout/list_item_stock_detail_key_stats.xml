@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,14 +13,38 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
+        android:id="@+id/stats_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/stats"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/white_smoke"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stats_label" />
+
+    <TextView
         android:id="@+id/open_price_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/open_price"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
 
     <TextView
         android:id="@+id/open_price"
@@ -29,7 +54,8 @@
         android:layout_marginTop="8dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider"
+        tools:text="12.34" />
 
     <TextView
         android:id="@+id/high_price_label"
@@ -38,6 +64,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/high_price"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/open_price_label" />
 
@@ -49,7 +76,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/open_price" />
+        app:layout_constraintTop_toBottomOf="@+id/open_price"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/low_price_label"
@@ -58,6 +86,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/low_price"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/high_price_label" />
 
@@ -69,7 +98,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/high_price" />
+        app:layout_constraintTop_toBottomOf="@+id/high_price"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/year_high_label"
@@ -78,6 +108,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/year_high_price"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/low_price_label" />
 
@@ -89,7 +120,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/low_price" />
+        app:layout_constraintTop_toBottomOf="@+id/low_price"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/year_low_label"
@@ -98,6 +130,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/year_low_price"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/year_high_label" />
 
@@ -109,7 +142,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/year_high" />
+        app:layout_constraintTop_toBottomOf="@+id/year_high"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/volume_label"
@@ -118,6 +152,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/volume"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/year_low_label" />
 
@@ -129,7 +164,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/year_low" />
+        app:layout_constraintTop_toBottomOf="@+id/year_low"
+        tools:text="12.34M"/>
 
     <TextView
         android:id="@+id/average_volume_label"
@@ -139,6 +175,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/average_volume"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volume_label" />
@@ -153,7 +190,8 @@
         android:text="@string/place_holder"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/volume" />
+        app:layout_constraintTop_toBottomOf="@+id/volume"
+        tools:text="12.34M"/>
 
     <TextView
         android:id="@+id/market_cap_label"
@@ -162,8 +200,9 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/market_cap"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider" />
 
     <TextView
         android:id="@+id/market_cap"
@@ -173,7 +212,8 @@
         android:layout_marginTop="8dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_divider"
+        tools:text="12.34B" />
 
     <TextView
         android:id="@+id/beta_label"
@@ -182,6 +222,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/beta"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/market_cap_label" />
 
@@ -193,7 +234,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/market_cap" />
+        app:layout_constraintTop_toBottomOf="@+id/market_cap"
+        tools:text="1.23"/>
 
     <TextView
         android:id="@+id/eps_label"
@@ -202,6 +244,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/eps"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/beta_label" />
 
@@ -213,7 +256,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/beta" />
+        app:layout_constraintTop_toBottomOf="@+id/beta"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/eps_date_label"
@@ -222,6 +266,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/eps_date"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/eps_label" />
 
@@ -233,7 +278,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eps" />
+        app:layout_constraintTop_toBottomOf="@+id/eps"
+        tools:text="2017-7-7"/>
 
     <TextView
         android:id="@+id/dividend_yield_label"
@@ -242,6 +288,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/dividend_yield"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/eps_date_label" />
 
@@ -253,7 +300,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eps_date" />
+        app:layout_constraintTop_toBottomOf="@+id/eps_date"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/price_earning_label"
@@ -262,6 +310,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/price_earning"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/dividend_yield_label" />
 
@@ -273,7 +322,8 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dividend_yield" />
+        app:layout_constraintTop_toBottomOf="@+id/dividend_yield"
+        tools:text="12.34"/>
 
     <TextView
         android:id="@+id/price_to_book_label"
@@ -283,6 +333,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/price_to_book"
+        android:textColor="@color/lighter_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@+id/price_earning_label" />
@@ -295,6 +346,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/place_holder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price_earning" />
+        app:layout_constraintTop_toBottomOf="@+id/price_earning"
+        tools:text="12.34"/>
 
 </android.support.constraint.ConstraintLayout>

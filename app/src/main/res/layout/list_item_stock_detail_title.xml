@@ -10,32 +10,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Ticker"
-        android:textSize="24sp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Ticker" />
 
     <TextView
         android:id="@+id/company_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Company Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker" />
+        app:layout_constraintTop_toBottomOf="@+id/ticker"
+        tools:text="Company Name"/>
 
     <TextView
         android:id="@+id/last_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Price"
-        android:textSize="18sp"
+        android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company_name" />
+        app:layout_constraintTop_toBottomOf="@+id/company_name"
+        tools:text="Price" />
 
     <TextView
         android:id="@+id/price_change"
@@ -43,10 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/last_price" />
+        app:layout_constraintTop_toBottomOf="@+id/last_price"
+        tools:text="Change"/>
 
 </android.support.constraint.ConstraintLayout>

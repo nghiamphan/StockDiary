@@ -13,6 +13,7 @@
     <string name="CEO">CEO</string>
     <string name="exchange">EXCHANGE</string>
 
+    <string name="stats">STATS</string>
     <string name="open_price">OPEN</string>
     <string name="high_price">HIGH</string>
     <string name="low_price">LOW</string>
@@ -27,4 +28,6 @@
     <string name="dividend_yield">DIV. YIELD</string>
     <string name="price_earning">P/E</string>
     <string name="price_to_book">PRICE/BOOK</string>
+
+    <string name="image_button_description">Add or remove stock from watchlist</string>
 </resources>
