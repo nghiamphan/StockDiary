@@ -20,6 +20,8 @@ import java.util.List;
 
 public class MainMenuFragment extends Fragment {
 
+    FetchTickerAndNameTask mFetchTickerAndNameTask = new FetchTickerAndNameTask();
+
     public static MainMenuFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -32,7 +34,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new FetchTickerAndNameTask().execute();
+        mFetchTickerAndNameTask.execute();
     }
 
     @Nullable
@@ -52,7 +54,14 @@ public class MainMenuFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFetchTickerAndNameTask.cancel(true);
+    }
+
     private class FetchTickerAndNameTask extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... voids) {
             List<StockItem> tickerAndNameList = new DataFetch().fetchStockTickerAndName();

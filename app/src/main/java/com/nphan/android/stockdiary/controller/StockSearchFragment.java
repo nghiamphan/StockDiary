@@ -85,7 +85,9 @@ public class StockSearchFragment extends Fragment {
         searchView.setMaxWidth(Integer.MAX_VALUE);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -184,7 +186,7 @@ public class StockSearchFragment extends Fragment {
         ImageButton mAddStockImageButton;
         private int mDrawableRsId;
 
-        public StockItemHolder(View itemView) {
+        private StockItemHolder(View itemView) {
             super(itemView);
             mTickerTextView = itemView.findViewById(R.id.stock_ticker);
             mCompanyNameTextView = itemView.findViewById(R.id.company_name);
@@ -222,11 +224,11 @@ public class StockSearchFragment extends Fragment {
     private class StockItemAdapter extends RecyclerView.Adapter<StockItemHolder> {
         private List<StockItem> mItems;
 
-        public StockItemAdapter(List<StockItem> stockItems) {
+        private StockItemAdapter(List<StockItem> stockItems) {
             mItems = stockItems;
         }
 
-        public void setItems(List<StockItem> stockItems) {
+        private void setItems(List<StockItem> stockItems) {
             mItems = stockItems;
         }
 

@@ -30,6 +30,7 @@ import com.robinhood.spark.SparkView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class WatchlistFragment extends Fragment {
 
@@ -47,7 +48,7 @@ public class WatchlistFragment extends Fragment {
 
     private List<String> mWatchlistTickers = new ArrayList<>();
     private List<StockItem> mStockItems = new ArrayList<>();
-    private HashMap<String, List> mChartPrices;
+    private HashMap<String, List<Float>> mChartPrices;
     private HashMap<String, Float> mPreviousPrices;
 
     private RecyclerView mRecyclerView;
@@ -140,7 +141,7 @@ public class WatchlistFragment extends Fragment {
         private Button mStockPriceButton;
         private SparkView mGraphSparkView;
 
-        public StockItemHolder(View itemView) {
+        private StockItemHolder(View itemView) {
             super(itemView);
             mStockTickerTextView = itemView.findViewById(R.id.stock_ticker);
             mStockPriceButton = itemView.findViewById(R.id.stock_price);
@@ -156,7 +157,7 @@ public class WatchlistFragment extends Fragment {
                 mStockPriceButton.setText(R.string.not_available);
             }
             else {
-                mStockPriceButton.setText(Float.toString(stockItem.getPrice()));
+                mStockPriceButton.setText(String.format(Locale.US, "%.2f", stockItem.getPrice()));
             }
             mStockPriceButton.setBackgroundColor(getResources().getColor(R.color.grey));
 
@@ -192,11 +193,11 @@ public class WatchlistFragment extends Fragment {
     private class StockItemAdapter extends RecyclerView.Adapter<StockItemHolder> {
         private List<StockItem> mItems;
 
-        public StockItemAdapter(List<StockItem> stockItems) {
+        private StockItemAdapter(List<StockItem> stockItems) {
             mItems = stockItems;
         }
 
-        public void setItems(List<StockItem> stockItems) {
+        private void setItems(List<StockItem> stockItems) {
             mItems = stockItems;
         }
 

@@ -24,7 +24,7 @@ public class StockSingleton {
      */
 
     private HashMap<String, StockItem> mCachedStockItems = new HashMap<>();
-    private HashMap<String, List> mChartPrices = new HashMap<>();
+    private HashMap<String, List<Float>> mChartPrices = new HashMap<>();
     private HashMap<String, Float> mPreviousPrices = new HashMap<>();
 
     private StockSingleton(Context context) {
@@ -41,7 +41,7 @@ public class StockSingleton {
         return mCachedStockItems;
     }
 
-    public HashMap<String, List> getChartPrices() {
+    public HashMap<String, List<Float>> getChartPrices() {
         return mChartPrices;
     }
 

@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,37 +30,14 @@ public class StockDetailFragment extends Fragment{
 
     private HashMap<String, StockItem> mCachedStockItems = new HashMap<>();
     private StockItem mStockItem;
-
     private String mTicker;
 
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mRecyclerAdapter;
 
-    private TextView mTickerTextView;
-    private TextView mCompanyNameTextView;
-    private TextView mPriceTextView;
-    private TextView mPriceChangeTextView;
-
-    private TextView mSectorTextView;
-    private TextView mIndustryTextView;
-    private TextView mCEOTextView;
-    private TextView mExchangeTextView;
-    private TextView mDescriptionTextView;
-
-    private TextView mOpenTextView;
-    private TextView mHighTextView;
-    private TextView mLowTextView;
-    private TextView m52WeekHighTextView;
-    private TextView m52WeekLowTextView;
-    private TextView mVolumeTextView;
-    private TextView mAvgVolumeTextView;
-    private TextView mMarketCapTextView;
-    private TextView mBetaTextView;
-    private TextView mEpsTextView;
-    private TextView mEpsDateTextView;
-    private TextView mDividendYieldTextView;
-    private TextView mPriceEarningTextView;
-    private TextView mPriceToBookTextView;
+    private FetchCompanyInfoTask mFetchCompanyInfoTask = new FetchCompanyInfoTask();
+    private FetchKeyStatsTask mFetchKeyStatsTask = new FetchKeyStatsTask();
+    private FetchStockQuoteTask mFetchStockQuoteTask = new FetchStockQuoteTask();
 
     public static StockDetailFragment newInstance(String ticker) {
 
@@ -84,13 +60,13 @@ public class StockDetailFragment extends Fragment{
         if (!mCachedStockItems.containsKey(mTicker)) {
             mStockItem = new StockItem();
             mStockItem.setTicker(mTicker);
-            new FetchCompanyInfoTask().execute();
-            new FetchKeyStatsTask().execute();
+            mFetchCompanyInfoTask.execute();
+            mFetchKeyStatsTask.execute();
         }
         else {
             mStockItem = mCachedStockItems.get(mTicker);
         }
-        new FetchStockQuoteTask().execute();
+        mFetchStockQuoteTask.execute();
     }
 
     @Nullable
@@ -103,6 +79,14 @@ public class StockDetailFragment extends Fragment{
         setupAdapter();
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFetchCompanyInfoTask.cancel(true);
+        mFetchKeyStatsTask.cancel(true);
+        mFetchStockQuoteTask.cancel(true);
     }
 
     private void setupAdapter() {
@@ -119,7 +103,33 @@ public class StockDetailFragment extends Fragment{
 
         private int mLayoutId;
 
-        public RecyclerHolder(LayoutInflater inflater, ViewGroup parent, int layoutId) {
+        private TextView mTickerTextView;
+        private TextView mCompanyNameTextView;
+        private TextView mPriceTextView;
+        private TextView mPriceChangeTextView;
+
+        private TextView mSectorTextView;
+        private TextView mIndustryTextView;
+        private TextView mCEOTextView;
+        private TextView mExchangeTextView;
+        private TextView mDescriptionTextView;
+
+        private TextView mOpenTextView;
+        private TextView mHighTextView;
+        private TextView mLowTextView;
+        private TextView m52WeekHighTextView;
+        private TextView m52WeekLowTextView;
+        private TextView mVolumeTextView;
+        private TextView mAvgVolumeTextView;
+        private TextView mMarketCapTextView;
+        private TextView mBetaTextView;
+        private TextView mEpsTextView;
+        private TextView mEpsDateTextView;
+        private TextView mDividendYieldTextView;
+        private TextView mPriceEarningTextView;
+        private TextView mPriceToBookTextView;
+
+        private RecyclerHolder(LayoutInflater inflater, ViewGroup parent, int layoutId) {
             super(inflater.inflate(layoutId, parent, false));
             mLayoutId = layoutId;
         }
@@ -133,7 +143,6 @@ public class StockDetailFragment extends Fragment{
                 mCompanyNameTextView.setText(mStockItem.getCompanyName());
 
                 mPriceTextView = itemView.findViewById(R.id.last_price);
-
                 Spannable spannableString = new SpannableString(String.format(Locale.US,"$%.2f", mStockItem.getPrice()));
                 spannableString.setSpan(new RelativeSizeSpan(0.7f), 0 , 1, 0);
                 mPriceTextView.setText(spannableString);
@@ -157,49 +166,73 @@ public class StockDetailFragment extends Fragment{
 
             else if (mLayoutId == R.layout.list_item_stock_detail_key_stats) {
                 mOpenTextView = itemView.findViewById(R.id.open_price);
-                mHighTextView = itemView.findViewById(R.id.high_price);
-                mLowTextView = itemView.findViewById(R.id.low_price);
-                m52WeekHighTextView = itemView.findViewById(R.id.year_high);
-                m52WeekLowTextView = itemView.findViewById(R.id.year_low);
-                mVolumeTextView = itemView.findViewById(R.id.volume);
-                mAvgVolumeTextView = itemView.findViewById(R.id.average_volume);
-
-                mMarketCapTextView = itemView.findViewById(R.id.market_cap);
-                mBetaTextView = itemView.findViewById(R.id.beta);
-                mEpsTextView = itemView.findViewById(R.id.eps);
-                mEpsDateTextView = itemView.findViewById(R.id.eps_date);
-                mDividendYieldTextView = itemView.findViewById(R.id.dividend_yield);
-                mPriceEarningTextView = itemView.findViewById(R.id.price_earning);
-                mPriceToBookTextView = itemView.findViewById(R.id.price_to_book);
-
                 mOpenTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getOpen()));
+
+                mHighTextView = itemView.findViewById(R.id.high_price);
                 mHighTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getHighToday()));
+
+                mLowTextView = itemView.findViewById(R.id.low_price);
                 mLowTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getLowToday()));
+
+                m52WeekHighTextView = itemView.findViewById(R.id.year_high);
                 m52WeekHighTextView.setText(String.format(Locale.US, "%.2f", mStockItem.get52WeekHigh()));
+
+                m52WeekLowTextView = itemView.findViewById(R.id.year_low);
                 m52WeekLowTextView.setText(String.format(Locale.US, "%.2f", mStockItem.get52WeekLow()));
+
+                mVolumeTextView = itemView.findViewById(R.id.volume);
                 mVolumeTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getVolume()));
+
+                mAvgVolumeTextView = itemView.findViewById(R.id.average_volume);
                 mAvgVolumeTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getAvgVolume()));
 
+                mMarketCapTextView = itemView.findViewById(R.id.market_cap);
                 mMarketCapTextView.setText(new NumberFormatHelper().formatBigNumber(mStockItem.getMarketCap()));
+
+                mBetaTextView = itemView.findViewById(R.id.beta);
                 mBetaTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getBeta()));
-                mEpsTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getLatestEPS()));
-                mEpsDateTextView.setText(mStockItem.getLatestEPSDate());
+
+                mEpsTextView = itemView.findViewById(R.id.eps);
+                mEpsDateTextView = itemView.findViewById(R.id.eps_date);
+                if (mStockItem.getLatestEPS() != 0) {
+                    mEpsTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getLatestEPS()));
+                    mEpsDateTextView.setText(mStockItem.getLatestEPSDate());
+                }
+
+                mDividendYieldTextView = itemView.findViewById(R.id.dividend_yield);
                 mDividendYieldTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getDividendYield()));
-                mPriceEarningTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPERatio()));
-                mPriceToBookTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPriceToBook()));
+
+                mPriceEarningTextView = itemView.findViewById(R.id.price_earning);
+                if (mStockItem.getPERatio() != 0) {
+                    mPriceEarningTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPERatio()));
+                }
+
+                mPriceToBookTextView = itemView.findViewById(R.id.price_to_book);
+                if (mStockItem.getPriceToBook() != 0) {
+                    mPriceToBookTextView.setText(String.format(Locale.US, "%.2f", mStockItem.getPriceToBook()));
+                }
             }
 
             else if (mLayoutId == R.layout.list_item_stock_detail_company_detail) {
                 mSectorTextView = itemView.findViewById(R.id.sector);
-                mIndustryTextView = itemView.findViewById(R.id.industry);
-                mCEOTextView = itemView.findViewById(R.id.CEO);
-                mExchangeTextView = itemView.findViewById(R.id.exchange);
-                mDescriptionTextView = itemView.findViewById(R.id.description);
+                if (!mStockItem.getSector().equals("")) {
+                    mSectorTextView.setText(mStockItem.getSector());
+                }
 
-                mSectorTextView.setText(mStockItem.getSector());
-                mIndustryTextView.setText(mStockItem.getIndustry());
-                mCEOTextView.setText(mStockItem.getCEO());
+                mIndustryTextView = itemView.findViewById(R.id.industry);
+                if (!mStockItem.getIndustry().equals("")) {
+                    mIndustryTextView.setText(mStockItem.getIndustry());
+                }
+
+                mCEOTextView = itemView.findViewById(R.id.CEO);
+                if (!mStockItem.getCEO().equals("")) {
+                    mCEOTextView.setText(mStockItem.getCEO());
+                }
+
+                mExchangeTextView = itemView.findViewById(R.id.exchange);
                 mExchangeTextView.setText(mStockItem.getExchange());
+
+                mDescriptionTextView = itemView.findViewById(R.id.description);
                 mDescriptionTextView.setText(mStockItem.getDescription());
             }
         }
@@ -304,7 +337,6 @@ public class StockDetailFragment extends Fragment{
         @Override
         protected void onPostExecute(StockItem stockItem) {
             setupAdapter();
-            Log.i("HIH", "updated");
 
             mStockItem.setPrice(stockItem.getPrice());
             mStockItem.setChangeToday(stockItem.getChangeToday());

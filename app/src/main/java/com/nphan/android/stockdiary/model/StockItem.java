@@ -27,32 +27,32 @@ public class StockItem {
     private Float mPriceToBook;
 
     public StockItem () {
-        mPrice = new Float(0);
-        mChangeToday = new Float(0);
-        mChangePercent = new Float(0);
+        mPrice = (float) 0;
+        mChangeToday = (float) 0;
+        mChangePercent = (float) 0;
 
-        mCompanyName = "_";
-        mSector = "_";
-        mIndustry = "_";
-        mCEO = "_";
-        mExchange = "_";
-        mDescription = "_";
+        mCompanyName = "";
+        mSector = "";
+        mIndustry = "";
+        mCEO = "";
+        mExchange = "";
+        mDescription = "";
 
-        mOpen = new Float(0);
-        mHighToday = new Float(0);
-        mLowToday = new Float(0);
-        m52WeekHigh = new Float(0);
-        m52WeekLow = new Float(0);
-        mAvgVolume = new Float(0);
-        mVolume = new Float(0);
+        mOpen = (float) 0;
+        mHighToday = (float) 0;
+        mLowToday = (float) 0;
+        m52WeekHigh = (float) 0;
+        m52WeekLow = (float) 0;
+        mAvgVolume = (float) 0;
+        mVolume = (float) 0;
 
-        mMarketCap = new Float(0);
-        mBeta = new Float(0);
-        mLatestEPS = new Float(0);
-        mLatestEPSDate = "_";
-        mDividendYield = new Float(0);
-        mPERatio = new Float(0);
-        mPriceToBook = new Float(0);
+        mMarketCap = (float) 0;
+        mBeta = (float) 0;
+        mLatestEPS = (float) 0;
+        mLatestEPSDate = "";
+        mDividendYield = (float) 0;
+        mPERatio = (float) 0;
+        mPriceToBook = (float) 0;
     }
 
     public String getTicker() {

@@ -342,6 +342,8 @@ public class DataFetch {
         stockItem.setVolume(Float.valueOf(companyObject.getString("latestVolume")));
         stockItem.setAvgVolume(Float.valueOf(companyObject.getString("avgTotalVolume")));
         stockItem.setMarketCap(Float.valueOf(companyObject.getString("marketCap")));
-        stockItem.setPERatio(Float.valueOf(companyObject.getString("peRatio")));
+        if (!companyObject.isNull("peRatio")) {
+            stockItem.setPERatio(Float.valueOf(companyObject.getString("peRatio")));
+        }
     }
 }
