@@ -167,6 +167,8 @@ public class WatchlistFragment extends Fragment {
                 mGraphSparkView.setAdapter(mySparkAdapter);
                 mGraphSparkView.setLineColor(getResources().getColor(mySparkAdapter.getColorId()));
                 mGraphSparkView.getBaseLinePaint().setPathEffect(mySparkAdapter.getDottedBaseline());
+
+                mStockPriceButton.setBackgroundColor(getResources().getColor(mySparkAdapter.getColorId()));
             }
         }
 

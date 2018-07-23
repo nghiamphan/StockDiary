@@ -1,5 +1,6 @@
 package com.nphan.android.stockdiary.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +29,7 @@ public class StockSearchFragment extends Fragment {
 
     /*
     mTickers retrieves the list of watchlist tickers, adds and removes tickers based on user's action, and is saved back to SharedPreferences once the Fragment is paused.
-    Note for why mTickers is saved to SharedPreferences in method onPause: Order of calls:
+    Note for why mTickers is saved to SharedPreferences in method onPause: Order of calls when open StockSearchActivity from WatchlistActivity:
     StockSearchActivity.onPause()
     WatchlistActivity.onResume()
     ...
@@ -161,6 +162,19 @@ public class StockSearchFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
+
+        /*
+        When resuming StockSearchFragment from StockDetailFragment, we need to update the adding icons to show any changes to ticker watchlist. If StockSearchFragment is resumed from StockDetailFragment instead of creating from WatchlistFragment, mAdapter != null.
+         */
+        if (mAdapter != null) {
+            setupAdapter();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         StockSharedPreferences.setTickerWatchlist(getActivity(), mTickers);
@@ -177,7 +191,7 @@ public class StockSearchFragment extends Fragment {
         }
     }
 
-    private class StockItemHolder extends RecyclerView.ViewHolder {
+    private class StockItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private StockItem mStockItem;
 
@@ -205,6 +219,7 @@ public class StockSearchFragment extends Fragment {
                     mAddStockImageButton.setImageDrawable(getResources().getDrawable(mDrawableRsId));
                 }
             });
+            itemView.setOnClickListener(this);
         }
 
         public void bindItem(StockItem stockItem) {
@@ -218,6 +233,12 @@ public class StockSearchFragment extends Fragment {
                 mDrawableRsId = R.drawable.ic_action_add;
             }
             mAddStockImageButton.setImageDrawable(getResources().getDrawable(mDrawableRsId));
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = StockDetailActivity.newIntent(getActivity(), mStockItem.getTicker());
+            startActivity(intent);
         }
     }
 
