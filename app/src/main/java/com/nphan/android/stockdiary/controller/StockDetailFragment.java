@@ -1,10 +1,12 @@
 package com.nphan.android.stockdiary.controller;
 
+import android.app.ActionBar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -13,6 +15,7 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
@@ -20,6 +23,7 @@ import com.nphan.android.stockdiary.R;
 import com.nphan.android.stockdiary.helper.MySparkAdapter;
 import com.nphan.android.stockdiary.helper.NumberFormatHelper;
 import com.nphan.android.stockdiary.model.StockItem;
+import com.nphan.android.stockdiary.model.StockSharedPreferences;
 import com.nphan.android.stockdiary.model.StockSingleton;
 import com.robinhood.spark.SparkView;
 
@@ -30,6 +34,8 @@ import java.util.Locale;
 public class StockDetailFragment extends Fragment{
 
     private final static String ARG_TICKER = "arg_ticker";
+
+    private List<String> mWatchlistTickers;
 
     private HashMap<String, StockItem> mCachedStockItems = new HashMap<>();
     private StockItem mStockItem;
@@ -47,6 +53,9 @@ public class StockDetailFragment extends Fragment{
     private FetchDataChartTask mFetchDataChartTask = new FetchDataChartTask();
     private FetchPreviousPriceTask mFetchPreviousPriceTask = new FetchPreviousPriceTask();
 
+    private ImageView mAddStockImageView;
+    private int mDrawableId;
+
     public static StockDetailFragment newInstance(String ticker) {
 
         Bundle args = new Bundle();
@@ -61,7 +70,9 @@ public class StockDetailFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mWatchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
         mCachedStockItems = StockSingleton.get(getActivity()).getCachedStockItems();
+
         if (getArguments() != null) {
             mTicker = getArguments().getString(ARG_TICKER);
         }
@@ -77,6 +88,14 @@ public class StockDetailFragment extends Fragment{
         mFetchStockQuoteTask.execute();
         mFetchDataChartTask.execute(mTicker);
         mFetchPreviousPriceTask.execute(mTicker);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            activity.getSupportActionBar().setCustomView(R.layout.fragment_stock_detail_menu);
+            View menuView = activity.getSupportActionBar().getCustomView();
+            setupMenu(menuView);
+        }
     }
 
     @Nullable
@@ -89,6 +108,12 @@ public class StockDetailFragment extends Fragment{
         setupAdapter();
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        StockSharedPreferences.setTickerWatchlist(getActivity(), mWatchlistTickers);
     }
 
     @Override
@@ -109,6 +134,35 @@ public class StockDetailFragment extends Fragment{
         else {
             mRecyclerAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void setupMenu(View menuView) {
+        TextView titleTextView = menuView.findViewById(R.id.menu_item_ticker);
+        titleTextView.setText(mTicker);
+
+        mAddStockImageView = menuView.findViewById(R.id.menu_item_add);
+        if (mWatchlistTickers.contains(mTicker)) {
+            mDrawableId = R.drawable.ic_action_checked_white;
+        }
+        else {
+            mDrawableId = R.drawable.ic_action_add_white;
+        }
+        mAddStockImageView.setImageDrawable(getResources().getDrawable(mDrawableId));
+
+        mAddStockImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDrawableId == R.drawable.ic_action_add_white) {
+                    mDrawableId = R.drawable.ic_action_checked_white;
+                    mWatchlistTickers.add(mTicker);
+                }
+                else {
+                    mDrawableId = R.drawable.ic_action_add_white;
+                    mWatchlistTickers.remove(mTicker);
+                }
+                mAddStockImageView.setImageDrawable(getResources().getDrawable(mDrawableId));
+            }
+        });
     }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder {

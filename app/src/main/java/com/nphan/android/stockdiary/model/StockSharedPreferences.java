@@ -11,7 +11,9 @@ import java.util.List;
 
 public class StockSharedPreferences {
     /*
-    PREF_STOCK_LIST: the list of all stocks in the api, around 8000
+    PREF_STOCK_LIST: the list of all stock items in the api, around 8000
+    Each item only contains information about ticker and company which are used for stock search
+
     PREF_TICKER_WATCHLIST: the list of stock tickers in the watchlist
      */
     private static final String PREF_STOCK_LIST = "stock_list";
