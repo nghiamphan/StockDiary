@@ -17,11 +17,14 @@ import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
 import com.nphan.android.stockdiary.R;
+import com.nphan.android.stockdiary.helper.MySparkAdapter;
 import com.nphan.android.stockdiary.helper.NumberFormatHelper;
 import com.nphan.android.stockdiary.model.StockItem;
 import com.nphan.android.stockdiary.model.StockSingleton;
+import com.robinhood.spark.SparkView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class StockDetailFragment extends Fragment{
@@ -35,9 +38,14 @@ public class StockDetailFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mRecyclerAdapter;
 
+    private HashMap<String, List<Float>> mChartPrices = StockSingleton.get(getActivity()).getChartPrices();
+    private HashMap<String, Float> mPreviousPrices = StockSingleton.get(getActivity()).getPreviousPrices();
+
     private FetchCompanyInfoTask mFetchCompanyInfoTask = new FetchCompanyInfoTask();
     private FetchKeyStatsTask mFetchKeyStatsTask = new FetchKeyStatsTask();
     private FetchStockQuoteTask mFetchStockQuoteTask = new FetchStockQuoteTask();
+    private FetchDataChartTask mFetchDataChartTask = new FetchDataChartTask();
+    private FetchPreviousPriceTask mFetchPreviousPriceTask = new FetchPreviousPriceTask();
 
     public static StockDetailFragment newInstance(String ticker) {
 
@@ -67,6 +75,8 @@ public class StockDetailFragment extends Fragment{
             mStockItem = mCachedStockItems.get(mTicker);
         }
         mFetchStockQuoteTask.execute();
+        mFetchDataChartTask.execute(mTicker);
+        mFetchPreviousPriceTask.execute(mTicker);
     }
 
     @Nullable
@@ -87,6 +97,8 @@ public class StockDetailFragment extends Fragment{
         mFetchCompanyInfoTask.cancel(true);
         mFetchKeyStatsTask.cancel(true);
         mFetchStockQuoteTask.cancel(true);
+        mFetchDataChartTask.cancel(true);
+        mFetchPreviousPriceTask.cancel(true);
     }
 
     private void setupAdapter() {
@@ -107,6 +119,8 @@ public class StockDetailFragment extends Fragment{
         private TextView mCompanyNameTextView;
         private TextView mPriceTextView;
         private TextView mPriceChangeTextView;
+
+        private SparkView mGraphSparkView;
 
         private TextView mSectorTextView;
         private TextView mIndustryTextView;
@@ -161,6 +175,20 @@ public class StockDetailFragment extends Fragment{
                 }
                 else {
                     mPriceChangeTextView.setTextColor(getResources().getColor(R.color.green));
+                }
+            }
+
+            else if (mLayoutId == R.layout.list_item_stock_detail_graph) {
+                mGraphSparkView = itemView.findViewById(R.id.graph_spark_view);
+
+                if (mChartPrices.get(mTicker) != null && mPreviousPrices.get(mTicker) != null) {
+                    List<Float> prices = mChartPrices.get(mTicker);
+                    Float previousClose = mPreviousPrices.get(mTicker);
+
+                    MySparkAdapter mySparkAdapter = new MySparkAdapter(prices, previousClose);
+                    mGraphSparkView.setAdapter(mySparkAdapter);
+                    mGraphSparkView.setLineColor(getResources().getColor(mySparkAdapter.getColorId()));
+                    mGraphSparkView.getBaseLinePaint().setPathEffect(mySparkAdapter.getDottedBaseline());
                 }
             }
 
@@ -351,6 +379,44 @@ public class StockDetailFragment extends Fragment{
             mStockItem.setPERatio(stockItem.getPERatio());
 
             mCachedStockItems.put(mTicker, mStockItem);
+        }
+    }
+
+    private class FetchDataChartTask extends AsyncTask<String, Void, List<Float>> {
+        /*
+        Fetch prices to display chart
+         */
+        private String mTicker;
+
+        @Override
+        protected List<Float> doInBackground(String... strings) {
+            mTicker = strings[0];
+            return new DataFetch().fetchChartDataOneDay(mTicker);
+        }
+
+        @Override
+        protected void onPostExecute(List<Float> prices) {
+            mChartPrices.put(mTicker, prices);
+            setupAdapter();
+        }
+    }
+
+    private class FetchPreviousPriceTask extends AsyncTask<String, Void, Float> {
+        /*
+        Fetch close price of previous day
+         */
+        private String mTicker;
+
+        @Override
+        protected Float doInBackground(String... strings) {
+            mTicker = strings[0];
+            return new DataFetch().fetchPreviousClose(mTicker);
+        }
+
+        @Override
+        protected void onPostExecute(Float previousPrice) {
+            mPreviousPrices.put(mTicker, previousPrice);
+            setupAdapter();
         }
     }
 }

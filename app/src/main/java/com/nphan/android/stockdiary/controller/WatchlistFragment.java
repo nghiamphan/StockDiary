@@ -1,8 +1,6 @@
 package com.nphan.android.stockdiary.controller;
 
 import android.content.Intent;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,10 +19,10 @@ import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
 import com.nphan.android.stockdiary.R;
+import com.nphan.android.stockdiary.helper.MySparkAdapter;
 import com.nphan.android.stockdiary.model.StockItem;
 import com.nphan.android.stockdiary.model.StockSharedPreferences;
 import com.nphan.android.stockdiary.model.StockSingleton;
-import com.robinhood.spark.SparkAdapter;
 import com.robinhood.spark.SparkView;
 
 import java.util.ArrayList;
@@ -163,23 +161,12 @@ public class WatchlistFragment extends Fragment {
 
             if (mChartPrices.get(ticker) != null && mPreviousPrices.get(ticker) != null) {
                 List<Float> prices = mChartPrices.get(ticker);
-                if (prices.size() == 0) {
-                    return;
-                }
+                Float previousClose = mPreviousPrices.get(ticker);
 
-                mGraphSparkView.setAdapter(new MySparkAdapter(ticker, prices));
-
-                int colorId = R.color.green;
-                if (prices.get(prices.size()-1) < mPreviousPrices.get(ticker)) {
-                    colorId = R.color.red;
-                }
-                mGraphSparkView.setLineColor(getResources().getColor(colorId));
-                mStockPriceButton.setBackgroundColor(getResources().getColor(colorId));
-
-                // Dotted baseline
-                Paint baseLinePaint = mGraphSparkView.getBaseLinePaint();
-                DashPathEffect dashPathEffect = new DashPathEffect(new float[] {5, 10}, 0);
-                baseLinePaint.setPathEffect(dashPathEffect);
+                MySparkAdapter mySparkAdapter = new MySparkAdapter(prices, previousClose);
+                mGraphSparkView.setAdapter(mySparkAdapter);
+                mGraphSparkView.setLineColor(getResources().getColor(mySparkAdapter.getColorId()));
+                mGraphSparkView.getBaseLinePaint().setPathEffect(mySparkAdapter.getDottedBaseline());
             }
         }
 
@@ -272,47 +259,6 @@ public class WatchlistFragment extends Fragment {
         protected void onPostExecute(Float previousPrice) {
             mPreviousPrices.put(mTicker, previousPrice);
             setupAdapter();
-        }
-    }
-
-    public class MySparkAdapter extends SparkAdapter {
-        private String mTicker;
-        private List<Float> mPrices;
-
-        public MySparkAdapter(String ticker, List<Float> prices) {
-            mTicker = ticker;
-            mPrices = prices;
-        }
-
-        @Override
-        public int getCount() {
-            return mPrices.size();
-        }
-
-        @Override
-        public Object getItem(int index) {
-            return mPrices.get(index);
-        }
-
-        @Override
-        public float getY(int index) {
-            if (mPrices.get(index) == null) {
-                return 0;
-            }
-            return mPrices.get(index);
-        }
-
-        @Override
-        public float getBaseLine() {
-            if (mPreviousPrices.get(mTicker) == null) {
-                return 0;
-            }
-            return mPreviousPrices.get(mTicker);
-        }
-
-        @Override
-        public boolean hasBaseLine() {
-            return getBaseLine() != 0;
         }
     }
 }

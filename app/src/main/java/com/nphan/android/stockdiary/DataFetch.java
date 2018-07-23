@@ -27,6 +27,13 @@ public class DataFetch {
     private static final String PREVIOUS = "previous";
     private static final String CHART = "chart";
     private static final String ONE_DAY = "1d";
+    private static final String ONE_MONTH = "1m";
+    private static final String THREE_MONTH = "3m";
+    private static final String SIX_MONTH = "6m";
+    private static final String YEAR_TO_DATE = "ytd";
+    private static final String ONE_YEAR = "1y";
+    private static final String TWO_YEAR = "2y";
+    private static final String FIVE_YEAR = "5y";
     private static final String COMPANY = "company";
     private static final String STATS = "stats";
 
@@ -144,7 +151,7 @@ public class DataFetch {
         stockItems.add(item);
     }
 
-    private List<Float> fetchChartData(String ticker, String period) {
+    public List<Float> fetchChartData(String ticker, String period) {
         /*
         Given a ticker and period, get that ticker's stock price in that time period
          */
@@ -177,10 +184,16 @@ public class DataFetch {
     private void parseChartData(List<Float> prices, String jsonString) throws JSONException {
         JSONArray dataJsonArray = new JSONArray(jsonString);
         Float price = null;
-        Float firstPrice = new Float(0);
+        Float firstPrice = (float) 0;
         for (int i = 0; i < dataJsonArray.length(); i++) {
             JSONObject data = dataJsonArray.getJSONObject(i);
-            if (data.has("close")) {
+            if (data.has("marketClose")) {
+                if (price == null) {
+                    firstPrice = Float.valueOf(data.getString("marketClose"));
+                }
+                price = Float.valueOf(data.getString("marketClose"));
+            }
+            else if (data.has("close")) {
                 if (price == null) {
                     firstPrice = Float.valueOf(data.getString("close"));
                 }
