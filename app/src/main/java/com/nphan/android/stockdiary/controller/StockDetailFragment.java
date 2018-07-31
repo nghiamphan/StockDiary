@@ -11,11 +11,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.format.DateFormat;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
@@ -25,6 +28,8 @@ import com.nphan.android.stockdiary.helper.NumberFormatHelper;
 import com.nphan.android.stockdiary.model.StockItem;
 import com.nphan.android.stockdiary.model.StockSharedPreferences;
 import com.nphan.android.stockdiary.model.StockSingleton;
+import com.nphan.android.stockdiary.model.TradeItem;
+import com.nphan.android.stockdiary.model.TradeSingleton;
 import com.robinhood.spark.SparkView;
 
 import java.util.HashMap;
@@ -165,6 +170,68 @@ public class StockDetailFragment extends Fragment{
         });
     }
 
+    private class TradesRecyclerHolder extends RecyclerView.ViewHolder {
+
+        private TextView mBuyOrSellTextView;
+        private TextView mQuantityTextView;
+        private TextView mDateTextView;
+        private TextView mPriceTextView;
+
+        private TradesRecyclerHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.list_item_trade_history_transaction, parent, false));
+        }
+
+        private void bind(TradeItem tradeItem) {
+            mBuyOrSellTextView = itemView.findViewById(R.id.buy_or_sell);
+            mBuyOrSellTextView.setText(tradeItem.getBuyOrSell());
+
+            mQuantityTextView = itemView.findViewById(R.id.quantity);
+            mQuantityTextView.setText(String.valueOf(tradeItem.getQuantity()));
+
+            mDateTextView = itemView.findViewById(R.id.date);
+            mDateTextView.setText(DateFormat.format("MMM dd, yyyy", tradeItem.getDate()));
+
+            mPriceTextView = itemView.findViewById(R.id.price);
+            mPriceTextView.setText(String.format(Locale.US, "$%.2f", tradeItem.getPrice()));
+        }
+    }
+
+    private class TradesRecyclerAdapter extends RecyclerView.Adapter<TradesRecyclerHolder> {
+
+        private List<TradeItem> mTradeItems;
+
+        private TradesRecyclerAdapter(List<TradeItem> tradeItems) {
+            mTradeItems = tradeItems;
+        }
+
+        @NonNull
+        @Override
+        public TradesRecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            return new TradesRecyclerHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull TradesRecyclerHolder holder, int position) {
+            TradeItem tradeItem = mTradeItems.get(position);
+            holder.bind(tradeItem);
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mTradeItems != null) {
+                return mTradeItems.size();
+            }
+            else {
+                return 0;
+            }
+        }
+
+        public void setTradeItems(List<TradeItem> tradeItems) {
+            mTradeItems = tradeItems;
+        }
+    }
+
     private class RecyclerHolder extends RecyclerView.ViewHolder {
 
         private int mLayoutId;
@@ -175,6 +242,9 @@ public class StockDetailFragment extends Fragment{
         private TextView mPriceChangeTextView;
 
         private SparkView mGraphSparkView;
+
+        private RecyclerView mTradesRecyclerView;
+        private Button mAddTransactionsButton;
 
         private TextView mSectorTextView;
         private TextView mIndustryTextView;
@@ -244,6 +314,30 @@ public class StockDetailFragment extends Fragment{
                     mGraphSparkView.setLineColor(getResources().getColor(mySparkAdapter.getColorId()));
                     mGraphSparkView.getBaseLinePaint().setPathEffect(mySparkAdapter.getDottedBaseline());
                 }
+            }
+
+            else if (mLayoutId == R.layout.list_item_stock_detail_portfolio) {
+                mTradesRecyclerView = itemView.findViewById(R.id.trades_recycler_view);
+                mTradesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                TradesRecyclerAdapter adapter = new TradesRecyclerAdapter(TradeSingleton.get(getActivity()).getTrades(mTicker));
+                mTradesRecyclerView.setAdapter(adapter);
+
+                if (adapter.getItemCount() == 0) {
+                    LinearLayout rowLabel = itemView.findViewById(R.id.label_row);
+                    rowLabel.setVisibility(View.GONE);
+                }
+
+                mAddTransactionsButton = itemView.findViewById(R.id.add_transactions);
+                mAddTransactionsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TradeItem item = new TradeItem();
+                        item.setTicker("FIT");
+                        item.setQuantity(10);
+                        item.setPrice(Float.valueOf("21.222"));
+                        TradeSingleton.get(getActivity()).addTrade(item);
+                    }
+                });
             }
 
             else if (mLayoutId == R.layout.list_item_stock_detail_key_stats) {
@@ -322,6 +416,14 @@ public class StockDetailFragment extends Fragment{
 
     private class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
 
+        int[] mLayoutIdList = {
+                R.layout.list_item_stock_detail_title,
+                R.layout.list_item_stock_detail_graph,
+                R.layout.list_item_stock_detail_portfolio,
+                R.layout.list_item_stock_detail_key_stats,
+                R.layout.list_item_stock_detail_company_detail
+        };
+
         @NonNull
         @Override
         public RecyclerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -336,13 +438,13 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         public int getItemCount() {
-            return 4;
+            return mLayoutIdList.length;
         }
 
         @Override
         public int getItemViewType(int position) {
-            int viewType = R.layout.list_item_stock_detail_title;
-            if (position == 1) {
+            int viewType = mLayoutIdList[position];
+            /*if (position == 1) {
                 viewType = R.layout.list_item_stock_detail_graph;
             }
             else if (position == 2) {
@@ -350,7 +452,7 @@ public class StockDetailFragment extends Fragment{
             }
             else if (position == 3) {
                 viewType = R.layout.list_item_stock_detail_company_detail;
-            }
+            }*/
             return viewType;
         }
     }

@@ -2,10 +2,15 @@ package com.nphan.android.stockdiary.model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.nphan.android.stockdiary.database.TradeBaseHelper;
+import com.nphan.android.stockdiary.database.TradeCursorWrapper;
 import com.nphan.android.stockdiary.database.TradeDbSchema.TradeTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TradeSingleton {
     private static TradeSingleton sTradeSingleton;
@@ -46,8 +51,31 @@ public class TradeSingleton {
                 new String[] {item.getId().toString()});
     }
 
-    public void getTrades(String ticker) {
+    public List<TradeItem> getTrades(String ticker) {
 
+        List<TradeItem> tradeItems = new ArrayList<>();
+
+        TradeCursorWrapper cursor = queryTrades(
+                TradeTable.Cols.TICKER + " = ?",
+                new String[] {ticker}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tradeItems.add(cursor.getTradeItem());
+                cursor.moveToNext();
+            }
+        }
+        finally {
+            cursor.close();
+        }
+
+        return tradeItems;
     }
 
     private static ContentValues getContentValues(TradeItem item) {
@@ -60,5 +88,20 @@ public class TradeSingleton {
         values.put(TradeTable.Cols.PRICE, item.getPrice());
 
         return values;
+    }
+
+    private TradeCursorWrapper queryTrades(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                TradeTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null,
+                null
+        );
+
+        return new TradeCursorWrapper(cursor);
     }
 }

@@ -7,6 +7,13 @@
     <string name="not_available">N/A</string>
     <string name="place_holder">_</string>
 
+    <string name="portfolio_label">PORTFOLIO</string>
+    <string name="type">Type</string>
+    <string name="quantity">Quantity</string>
+    <string name="date">Date</string>
+    <string name="price">Price</string>
+    <string name="add_transactions">Add Transactions</string>
+
     <string name="about">ABOUT</string>
     <string name="sector">SECTOR</string>
     <string name="industry">INDUSTRY</string>

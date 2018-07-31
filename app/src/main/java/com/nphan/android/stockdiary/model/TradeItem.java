@@ -13,7 +13,7 @@ public class TradeItem {
 
     public TradeItem() {
         mId = UUID.randomUUID();
-        mBuyOrSell = "buy";
+        mBuyOrSell = "BUY";
         mDate = new Date();
     }
 
