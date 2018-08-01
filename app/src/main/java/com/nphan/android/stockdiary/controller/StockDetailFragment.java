@@ -1,6 +1,7 @@
 package com.nphan.android.stockdiary.controller;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -170,7 +171,9 @@ public class StockDetailFragment extends Fragment{
         });
     }
 
-    private class TradesRecyclerHolder extends RecyclerView.ViewHolder {
+    private class TradesRecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        private TradeItem mTradeItem;
 
         private TextView mBuyOrSellTextView;
         private TextView mQuantityTextView;
@@ -179,9 +182,12 @@ public class StockDetailFragment extends Fragment{
 
         private TradesRecyclerHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_trade_history_transaction, parent, false));
+            itemView.setOnClickListener(this);
         }
 
         private void bind(TradeItem tradeItem) {
+            mTradeItem = tradeItem;
+
             mBuyOrSellTextView = itemView.findViewById(R.id.buy_or_sell);
             mBuyOrSellTextView.setText(tradeItem.getBuyOrSell());
 
@@ -193,6 +199,12 @@ public class StockDetailFragment extends Fragment{
 
             mPriceTextView = itemView.findViewById(R.id.price);
             mPriceTextView.setText(String.format(Locale.US, "$%.2f", tradeItem.getPrice()));
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = TransactionDetailActivity.newIntent(getActivity(), mTradeItem.getId(), mTicker);
+            startActivity(intent);
         }
     }
 
@@ -331,11 +343,8 @@ public class StockDetailFragment extends Fragment{
                 mAddTransactionsButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TradeItem item = new TradeItem();
-                        item.setTicker("FIT");
-                        item.setQuantity(10);
-                        item.setPrice(Float.valueOf("21.222"));
-                        TradeSingleton.get(getActivity()).addTrade(item);
+                        Intent intent = TransactionDetailActivity.newIntent(getActivity(), mTicker);
+                        startActivity(intent);
                     }
                 });
             }

@@ -13,6 +13,12 @@
     <string name="date">Date</string>
     <string name="price">Price</string>
     <string name="add_transactions">Add Transactions</string>
+    <string name="buy">BUY</string>
+    <string name="sell">SELL</string>
+    <string name="enter_quantity">Enter quantity</string>
+    <string name="enter_price">Enter price</string>
+    <string name="update">UPDATE</string>
+    <string name="delete">DELETE</string>
 
     <string name="about">ABOUT</string>
     <string name="sector">SECTOR</string>
