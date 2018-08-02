@@ -7,6 +7,7 @@ import com.nphan.android.stockdiary.database.TradeDbSchema.TradeTable;
 import com.nphan.android.stockdiary.model.TradeItem;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class TradeCursorWrapper extends CursorWrapper {
     public TradeCursorWrapper(Cursor cursor) {
@@ -21,7 +22,7 @@ public class TradeCursorWrapper extends CursorWrapper {
         long date = getLong(getColumnIndex(TradeTable.Cols.DATE));
         Float price = getFloat(getColumnIndex(TradeTable.Cols.PRICE));
 
-        TradeItem tradeItem = new TradeItem();
+        TradeItem tradeItem = new TradeItem(UUID.fromString(uuidString));
         tradeItem.setBuyOrSell(buyOrSell);
         tradeItem.setTicker(ticker);
         tradeItem.setQuantity(quantity);

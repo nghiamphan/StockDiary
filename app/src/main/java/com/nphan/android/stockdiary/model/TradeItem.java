@@ -12,8 +12,13 @@ public class TradeItem {
     private Float mPrice;
 
     public TradeItem() {
-        mId = UUID.randomUUID();
+        this(UUID.randomUUID());
+    }
+
+    public TradeItem(UUID id) {
+        mId = id;
         mBuyOrSell = "BUY";
+        mQuantity = 0;
         mDate = new Date();
     }
 

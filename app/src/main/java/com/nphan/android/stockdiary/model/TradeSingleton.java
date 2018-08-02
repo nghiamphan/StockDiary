@@ -11,6 +11,7 @@ import com.nphan.android.stockdiary.database.TradeDbSchema.TradeTable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TradeSingleton {
     private static TradeSingleton sTradeSingleton;
@@ -51,7 +52,26 @@ public class TradeSingleton {
                 new String[] {item.getId().toString()});
     }
 
-    public List<TradeItem> getTrades(String ticker) {
+    public TradeItem getTradeById(UUID id) {
+        TradeCursorWrapper cursor = queryTrades(
+                TradeTable.Cols.UUID + " = ?",
+                new String[] {id.toString()}
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getTradeItem();
+        }
+        finally {
+            cursor.close();
+        }
+    }
+
+    public List<TradeItem> getTradesByTicker(String ticker) {
 
         List<TradeItem> tradeItems = new ArrayList<>();
 

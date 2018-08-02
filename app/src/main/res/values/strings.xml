@@ -43,4 +43,5 @@
     <string name="price_to_book">PRICE/BOOK</string>
 
     <string name="image_button_description">Add or remove stock from watchlist</string>
+    <string name="enter_transaction">Enter Transaction</string>
 </resources>

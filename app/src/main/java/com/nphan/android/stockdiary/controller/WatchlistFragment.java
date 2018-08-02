@@ -61,14 +61,6 @@ public class WatchlistFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        mChartPrices = StockSingleton.get(getActivity()).getChartPrices();
-        mPreviousPrices = StockSingleton.get(getActivity()).getPreviousPrices();
-        FetchTask();
-    }
 
     private void FetchTask() {
         mWatchlistTickers = StockSharedPreferences.getTickerWatchlist(getActivity());
@@ -83,6 +75,15 @@ public class WatchlistFragment extends Fragment {
                 new FetchPreviousPriceTask().execute(ticker);
             }
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mChartPrices = StockSingleton.get(getActivity()).getChartPrices();
+        mPreviousPrices = StockSingleton.get(getActivity()).getPreviousPrices();
+        FetchTask();
     }
 
     @Nullable

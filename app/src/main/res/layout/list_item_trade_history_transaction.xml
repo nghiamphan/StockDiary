@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/buy_or_sell"
+        android:id="@+id/buy_or_sell_radio_group"
         android:layout_width="56dp"
         android:layout_height="15dp"
         android:layout_marginBottom="8dp"
@@ -28,7 +28,7 @@
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/buy_or_sell"
+        app:layout_constraintStart_toEndOf="@+id/buy_or_sell_radio_group"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Quantity" />
 

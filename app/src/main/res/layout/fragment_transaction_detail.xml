@@ -7,19 +7,19 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/ticker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Ticker" />
 
     <RadioGroup
-        android:id="@+id/buy_or_sell"
+        android:id="@+id/buy_or_sell_radio_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -28,7 +28,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/ticker">
 
         <RadioButton
             android:id="@+id/buy_radio_button"
@@ -36,14 +36,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/buy"
+            android:textSize="18sp"
+            android:checked="true"
             tools:text="@string/buy" />
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/sell_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/sell"
+            android:textSize="18sp"
             tools:text="@string/sell" />
     </RadioGroup>
 
@@ -56,7 +59,7 @@
         android:text="@string/quantity"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buy_or_sell" />
+        app:layout_constraintTop_toBottomOf="@+id/buy_or_sell_radio_group" />
 
     <EditText
         android:id="@+id/quantity"
@@ -69,7 +72,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/quantity_label"
-        app:layout_constraintTop_toBottomOf="@+id/buy_or_sell"
+        app:layout_constraintTop_toBottomOf="@+id/buy_or_sell_radio_group"
         android:hint="@string/enter_quantity"
         tools:text="12" />
 
@@ -122,7 +125,7 @@
         android:hint="@string/enter_price"/>
 
     <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/update_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -132,7 +135,7 @@
         app:layout_constraintTop_toBottomOf="@+id/price_label" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"

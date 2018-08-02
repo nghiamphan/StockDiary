@@ -117,6 +117,12 @@ public class StockDetailFragment extends Fragment{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setupAdapter();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         StockSharedPreferences.setTickerWatchlist(getActivity(), mWatchlistTickers);
@@ -188,7 +194,7 @@ public class StockDetailFragment extends Fragment{
         private void bind(TradeItem tradeItem) {
             mTradeItem = tradeItem;
 
-            mBuyOrSellTextView = itemView.findViewById(R.id.buy_or_sell);
+            mBuyOrSellTextView = itemView.findViewById(R.id.buy_or_sell_radio_group);
             mBuyOrSellTextView.setText(tradeItem.getBuyOrSell());
 
             mQuantityTextView = itemView.findViewById(R.id.quantity);
@@ -331,7 +337,7 @@ public class StockDetailFragment extends Fragment{
             else if (mLayoutId == R.layout.list_item_stock_detail_portfolio) {
                 mTradesRecyclerView = itemView.findViewById(R.id.trades_recycler_view);
                 mTradesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                TradesRecyclerAdapter adapter = new TradesRecyclerAdapter(TradeSingleton.get(getActivity()).getTrades(mTicker));
+                TradesRecyclerAdapter adapter = new TradesRecyclerAdapter(TradeSingleton.get(getActivity()).getTradesByTicker(mTicker));
                 mTradesRecyclerView.setAdapter(adapter);
 
                 if (adapter.getItemCount() == 0) {
