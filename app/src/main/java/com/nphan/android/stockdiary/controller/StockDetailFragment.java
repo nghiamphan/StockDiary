@@ -201,7 +201,7 @@ public class StockDetailFragment extends Fragment{
             mQuantityTextView.setText(String.valueOf(tradeItem.getQuantity()));
 
             mDateTextView = itemView.findViewById(R.id.date_button);
-            mDateTextView.setText(DateFormat.format("MMM dd, yyyy", tradeItem.getDate()));
+            mDateTextView.setText(DateFormat.format("MMM dd, yyyy", tradeItem.getCalendar()));
 
             mPriceTextView = itemView.findViewById(R.id.price);
             mPriceTextView.setText(String.format(Locale.US, "$%.2f", tradeItem.getPrice()));

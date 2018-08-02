@@ -6,7 +6,8 @@ import android.database.CursorWrapper;
 import com.nphan.android.stockdiary.database.TradeDbSchema.TradeTable;
 import com.nphan.android.stockdiary.model.TradeItem;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class TradeCursorWrapper extends CursorWrapper {
@@ -19,14 +20,16 @@ public class TradeCursorWrapper extends CursorWrapper {
         String buyOrSell = getString(getColumnIndex(TradeTable.Cols.BUY_OR_SELL));
         String ticker = getString(getColumnIndex(TradeTable.Cols.TICKER));
         int quantity = getInt(getColumnIndex(TradeTable.Cols.QUANTITY));
-        long date = getLong(getColumnIndex(TradeTable.Cols.DATE));
+        long timeStamp = getLong(getColumnIndex(TradeTable.Cols.DATE));
         Float price = getFloat(getColumnIndex(TradeTable.Cols.PRICE));
 
         TradeItem tradeItem = new TradeItem(UUID.fromString(uuidString));
         tradeItem.setBuyOrSell(buyOrSell);
         tradeItem.setTicker(ticker);
         tradeItem.setQuantity(quantity);
-        tradeItem.setDate(new Date(date));
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTimeInMillis(timeStamp);
+        tradeItem.setCalendar(calendar);
         tradeItem.setPrice(price);
 
         return tradeItem;

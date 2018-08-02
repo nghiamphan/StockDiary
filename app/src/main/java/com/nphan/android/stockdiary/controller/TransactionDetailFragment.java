@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +26,7 @@ import com.nphan.android.stockdiary.R;
 import com.nphan.android.stockdiary.model.TradeItem;
 import com.nphan.android.stockdiary.model.TradeSingleton;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.UUID;
 
 public class TransactionDetailFragment extends Fragment {
@@ -134,12 +133,12 @@ public class TransactionDetailFragment extends Fragment {
         });
 
         mDateButton = view.findViewById(R.id.date_button);
-        mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getDate()));
+        mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getCalendar()));
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
-                DatePickerFragment dateDialog = DatePickerFragment.newInstance(mTradeItem.getDate());
+                DatePickerFragment dateDialog = DatePickerFragment.newInstance(mTradeItem.getCalendar());
                 dateDialog.setTargetFragment(TransactionDetailFragment.this, REQUEST_DATE);
                 if (manager != null) {
                     dateDialog.show(manager, DIALOG_DATE);
@@ -221,9 +220,9 @@ public class TransactionDetailFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mTradeItem.setDate(date);
-            mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getDate()));
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mTradeItem.setCalendar(calendar);
+            mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getCalendar()));
         }
     }
 
@@ -237,7 +236,7 @@ public class TransactionDetailFragment extends Fragment {
     }
 
     private void checkUpdateButton() {
-        if (mTradeItem.getQuantity() != 0 && mTradeItem.getPrice() != null) {
+        if (mTradeItem.getQuantity() != 0 && mTradeItem.getPrice() != null && mTradeItem.getPrice() != 0) {
             mUpdateButton.setEnabled(true);
         }
     }

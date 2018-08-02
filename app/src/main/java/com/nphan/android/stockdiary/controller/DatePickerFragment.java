@@ -15,7 +15,6 @@ import android.widget.DatePicker;
 import com.nphan.android.stockdiary.R;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class DatePickerFragment extends DialogFragment {
@@ -25,10 +24,10 @@ public class DatePickerFragment extends DialogFragment {
 
     private DatePicker mDatePicker;
 
-    public static DatePickerFragment newInstance(Date date) {
+    public static DatePickerFragment newInstance(Calendar calendar) {
 
         Bundle args = new Bundle();
-        args.putSerializable(ARG_DATE, date);
+        args.putSerializable(ARG_DATE, calendar);
 
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.setArguments(args);
@@ -38,9 +37,7 @@ public class DatePickerFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Date date = (Date) getArguments().getSerializable(ARG_DATE);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        Calendar calendar = (Calendar) getArguments().getSerializable(ARG_DATE);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -59,20 +56,20 @@ public class DatePickerFragment extends DialogFragment {
                         int year = mDatePicker.getYear();
                         int month = mDatePicker.getMonth();
                         int day = mDatePicker.getDayOfMonth();
-                        Date date = new GregorianCalendar(year, month, day).getTime();
-                        sendResult(Activity.RESULT_OK, date);
+                        Calendar calendar = new GregorianCalendar(year, month, day);
+                        sendResult(Activity.RESULT_OK, calendar);
                     }
                 })
                 .create();
     }
 
-    private void sendResult(int resultCode, Date date) {
+    private void sendResult(int resultCode, Calendar calendar) {
         if (getTargetFragment() == null) {
             return;
         }
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DATE, date);
+        intent.putExtra(EXTRA_DATE, calendar);
 
         getTargetFragment()
                 .onActivityResult(getTargetRequestCode(), resultCode, intent);

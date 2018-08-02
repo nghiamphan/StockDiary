@@ -1,6 +1,7 @@
 package com.nphan.android.stockdiary.model;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class TradeItem {
@@ -8,7 +9,7 @@ public class TradeItem {
     private String mBuyOrSell;
     private String mTicker;
     private int mQuantity;
-    private Date mDate;
+    private Calendar mCalendar;
     private Float mPrice;
 
     public TradeItem() {
@@ -19,7 +20,7 @@ public class TradeItem {
         mId = id;
         mBuyOrSell = "BUY";
         mQuantity = 0;
-        mDate = new Date();
+        mCalendar = new GregorianCalendar();
     }
 
     public UUID getId() {
@@ -54,12 +55,12 @@ public class TradeItem {
         mQuantity = quantity;
     }
 
-    public Date getDate() {
-        return mDate;
+    public Calendar getCalendar() {
+        return mCalendar;
     }
 
-    public void setDate(Date date) {
-        mDate = date;
+    public void setCalendar(Calendar calendar) {
+        mCalendar = calendar;
     }
 
     public Float getPrice() {

@@ -109,7 +109,7 @@ public class TradeSingleton {
 
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                tickers.add(cursor.getString(0));
+                tickers.add(cursor.getString(cursor.getColumnIndex(TradeTable.Cols.TICKER)));
                 cursor.moveToNext();
             }
         }
@@ -141,7 +141,7 @@ public class TradeSingleton {
         values.put(TradeTable.Cols.BUY_OR_SELL, item.getBuyOrSell());
         values.put(TradeTable.Cols.TICKER, item.getTicker());
         values.put(TradeTable.Cols.QUANTITY, item.getQuantity());
-        values.put(TradeTable.Cols.DATE, item.getDate().getTime());
+        values.put(TradeTable.Cols.DATE, item.getCalendar().getTimeInMillis());
         values.put(TradeTable.Cols.PRICE, item.getPrice());
 
         return values;
