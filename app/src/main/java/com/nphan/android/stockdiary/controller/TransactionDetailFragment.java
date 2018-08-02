@@ -171,7 +171,6 @@ public class TransactionDetailFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().equals("")) {
-                    Log.i("HIHI", s.toString());
                     mTradeItem.setQuantity(Integer.valueOf(s.toString()));
                 }
                 checkUpdateButton();

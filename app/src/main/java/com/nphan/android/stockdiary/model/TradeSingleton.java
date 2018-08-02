@@ -98,6 +98,43 @@ public class TradeSingleton {
         return tradeItems;
     }
 
+    public List<String> getAllPortfolioTickers() {
+        Cursor cursor = mDatabase.rawQuery("SELECT DISTINCT " + TradeTable.Cols.TICKER + " FROM " + TradeTable.NAME + ";", null);
+
+        List<String> tickers = new ArrayList<>();
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tickers.add(cursor.getString(0));
+                cursor.moveToNext();
+            }
+        }
+        finally {
+            cursor.close();
+        }
+
+        return tickers;
+    }
+
+    public int numberOfStocksByTicker(String ticker) {
+        List<TradeItem> tradeItems = getTradesByTicker(ticker);
+        int total = 0;
+        for (TradeItem item : tradeItems) {
+            if (item.getBuyOrSell().equals("BUY")) {
+                total += item.getQuantity();
+            }
+            else {
+                total -= item.getQuantity();
+            }
+        }
+
+        return total;
+    }
+
     private static ContentValues getContentValues(TradeItem item) {
         ContentValues values = new ContentValues();
         values.put(TradeTable.Cols.UUID, item.getId().toString());
