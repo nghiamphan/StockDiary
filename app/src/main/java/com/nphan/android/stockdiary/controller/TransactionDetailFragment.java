@@ -1,12 +1,17 @@
 package com.nphan.android.stockdiary.controller;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +27,15 @@ import com.nphan.android.stockdiary.R;
 import com.nphan.android.stockdiary.model.TradeItem;
 import com.nphan.android.stockdiary.model.TradeSingleton;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class TransactionDetailFragment extends Fragment {
 
     private final static String ARG_ID = "arg_id";
     private final static String ARG_TICKER = "arg_ticker";
+    private final static String DIALOG_DATE = "dialog_date";
+    private final static int REQUEST_DATE = 0;
 
     private UUID mId;
     private String mTicker;
@@ -36,10 +44,10 @@ public class TransactionDetailFragment extends Fragment {
 
     private TextView mTickerTextView;
     private RadioGroup mBuyOrSellRadioGroup;
-    private RadioButton mBuyRadioButton;
     private RadioButton mSellRadioButton;
     private EditText mQuantityEditText;
     private EditText mPriceEditText;
+    private Button mDateButton;
     private Button mUpdateButton;
     private Button mDeleteButton;
 
@@ -125,8 +133,21 @@ public class TransactionDetailFragment extends Fragment {
             }
         });
 
+        mDateButton = view.findViewById(R.id.date_button);
+        mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getDate()));
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment dateDialog = DatePickerFragment.newInstance(mTradeItem.getDate());
+                dateDialog.setTargetFragment(TransactionDetailFragment.this, REQUEST_DATE);
+                if (manager != null) {
+                    dateDialog.show(manager, DIALOG_DATE);
+                }
+            }
+        });
+
         mBuyOrSellRadioGroup = view.findViewById(R.id.buy_or_sell_radio_group);
-        mBuyRadioButton = view.findViewById(R.id.buy_radio_button);
         mSellRadioButton = view.findViewById(R.id.sell_radio_button);
         mBuyOrSellRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -149,7 +170,10 @@ public class TransactionDetailFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mTradeItem.setQuantity(Integer.valueOf(s.toString()));
+                if (!s.toString().equals("")) {
+                    Log.i("HIHI", s.toString());
+                    mTradeItem.setQuantity(Integer.valueOf(s.toString()));
+                }
                 checkUpdateButton();
             }
 
@@ -168,7 +192,9 @@ public class TransactionDetailFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mTradeItem.setPrice(Float.valueOf(s.toString()));
+                if (!s.toString().equals("")) {
+                    mTradeItem.setPrice(Float.valueOf(s.toString()));
+                }
                 checkUpdateButton();
             }
 
@@ -179,7 +205,7 @@ public class TransactionDetailFragment extends Fragment {
         });
 
         if (!mCreatedNew) {
-            if (mTradeItem.getBuyOrSell() == "SELL") {
+            if (mTradeItem.getBuyOrSell().equals("SELL")) {
                 mSellRadioButton.setChecked(true);
             }
             mQuantityEditText.setText(String.valueOf(mTradeItem.getQuantity()));
@@ -187,6 +213,19 @@ public class TransactionDetailFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_DATE) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mTradeItem.setDate(date);
+            mDateButton.setText(DateFormat.format("MMM dd, yyyy", mTradeItem.getDate()));
+        }
     }
 
     @Override

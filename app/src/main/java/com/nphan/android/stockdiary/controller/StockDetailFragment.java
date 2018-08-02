@@ -200,7 +200,7 @@ public class StockDetailFragment extends Fragment{
             mQuantityTextView = itemView.findViewById(R.id.quantity);
             mQuantityTextView.setText(String.valueOf(tradeItem.getQuantity()));
 
-            mDateTextView = itemView.findViewById(R.id.date);
+            mDateTextView = itemView.findViewById(R.id.date_button);
             mDateTextView.setText(DateFormat.format("MMM dd, yyyy", tradeItem.getDate()));
 
             mPriceTextView = itemView.findViewById(R.id.price);
@@ -340,9 +340,12 @@ public class StockDetailFragment extends Fragment{
                 TradesRecyclerAdapter adapter = new TradesRecyclerAdapter(TradeSingleton.get(getActivity()).getTradesByTicker(mTicker));
                 mTradesRecyclerView.setAdapter(adapter);
 
+                LinearLayout rowLabel = itemView.findViewById(R.id.label_row);
                 if (adapter.getItemCount() == 0) {
-                    LinearLayout rowLabel = itemView.findViewById(R.id.label_row);
                     rowLabel.setVisibility(View.GONE);
+                }
+                else {
+                    rowLabel.setVisibility(View.VISIBLE);
                 }
 
                 mAddTransactionsButton = itemView.findViewById(R.id.add_transactions);
