@@ -1,13 +1,17 @@
 package com.nphan.android.stockdiary.controller;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -49,6 +53,7 @@ public class PortfolioFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mTradeSingleton = TradeSingleton.get(getActivity());
         mPortfolioTickers = mTradeSingleton.getAllPortfolioTickers();
 
@@ -67,6 +72,21 @@ public class PortfolioFragment extends Fragment {
         setupAdapter();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(getResources().getString(R.string.portfolio));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FetchTask();
     }
 
     private void setupAdapter() {
@@ -93,7 +113,7 @@ public class PortfolioFragment extends Fragment {
         }
     }
 
-    private class PositionRecyclerHolder extends RecyclerView.ViewHolder {
+    private class PositionRecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView mTickerTextView;
         private TextView mSharesTextView;
@@ -102,6 +122,7 @@ public class PortfolioFragment extends Fragment {
 
         private PositionRecyclerHolder(LayoutInflater layoutInflater, ViewGroup parent) {
             super(layoutInflater.inflate(R.layout.list_item_portfolio_position_each_item, parent, false));
+            itemView.setOnClickListener(this);
         }
 
         private void bind(StockItem item) {
@@ -135,6 +156,12 @@ public class PortfolioFragment extends Fragment {
 
                 mStockPriceButton.setBackgroundColor(getResources().getColor(mySparkAdapter.getColorId()));
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = StockDetailActivity.newIntent(getActivity(), (String) mTickerTextView.getText());
+            startActivity(intent);
         }
     }
 
