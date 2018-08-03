@@ -294,7 +294,7 @@ public class StockDetailFragment extends Fragment{
 
         private void bind() {
             if (mLayoutId == R.layout.list_item_stock_detail_title) {
-                mTickerTextView = itemView.findViewById(R.id.ticker);
+                mTickerTextView = itemView.findViewById(R.id.ticker_label);
                 mTickerTextView.setText(mTicker);
 
                 mCompanyNameTextView = itemView.findViewById(R.id.company_name);
@@ -350,7 +350,7 @@ public class StockDetailFragment extends Fragment{
                     rowLabel.setVisibility(View.VISIBLE);
                     int shares = TradeSingleton.get(getActivity()).numberOfSharesByTicker(mTicker);
 
-                    mSharesTextView = itemView.findViewById(R.id.shares);
+                    mSharesTextView = itemView.findViewById(R.id.shares_label);
                     mSharesTextView.setText(String.valueOf(shares));
 
                     mTotalValueView = itemView.findViewById(R.id.total_value);
@@ -470,8 +470,7 @@ public class StockDetailFragment extends Fragment{
 
         @Override
         public int getItemViewType(int position) {
-            int viewType = mLayoutIdList[position];
-            return viewType;
+            return mLayoutIdList[position];
         }
     }
 

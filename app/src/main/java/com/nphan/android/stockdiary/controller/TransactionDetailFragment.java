@@ -95,7 +95,7 @@ public class TransactionDetailFragment extends Fragment {
 
         final TradeSingleton tradeSingleton = TradeSingleton.get(getActivity());
 
-        mTickerTextView = view.findViewById(R.id.ticker);
+        mTickerTextView = view.findViewById(R.id.ticker_label);
         mTickerTextView.setText(mTicker);
 
         mUpdateButton = view.findViewById(R.id.update_button);

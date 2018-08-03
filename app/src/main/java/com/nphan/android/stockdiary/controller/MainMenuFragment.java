@@ -51,6 +51,15 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
+        Button portfolioButton = view.findViewById(R.id.main_menu_portfolio_button);
+        portfolioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = PortfolioActivity.newIntent(getActivity());
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 

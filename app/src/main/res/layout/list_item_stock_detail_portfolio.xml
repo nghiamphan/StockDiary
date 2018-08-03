@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/shares"
+            android:id="@+id/shares_label"
             android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -70,7 +70,7 @@
             android:text="@string/total_value"
             android:textAlignment="textStart"
             android:textColor="@color/lighter_grey"
-            app:layout_constraintStart_toEndOf="@+id/shares"
+            app:layout_constraintStart_toEndOf="@+id/shares_label"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

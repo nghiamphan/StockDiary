@@ -47,4 +47,7 @@
 
     <string name="image_button_description">Add or remove stock from watchlist</string>
     <string name="enter_transaction">Enter Transaction</string>
+
+    <string name="ticker">TICKER</string>
+    <string name="equity">EQUITY</string>
 </resources>

@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class DataFetch {
@@ -151,7 +154,7 @@ public class DataFetch {
         stockItems.add(item);
     }
 
-    public List<Float> fetchChartData(String ticker, String period) {
+    private List<Float> fetchChartData(String ticker, String period) {
         /*
         Given a ticker and period, get that ticker's stock price in that time period
          */
@@ -357,6 +360,50 @@ public class DataFetch {
         stockItem.setMarketCap(Float.valueOf(companyObject.getString("marketCap")));
         if (!companyObject.isNull("peRatio")) {
             stockItem.setPERatio(Float.valueOf(companyObject.getString("peRatio")));
+        }
+    }
+
+    private HashMap<Calendar, Float> fetchChartDataWithDate(String ticker) {
+        /*
+        Given a ticker, get that ticker's stock price in 5-year period
+         */
+
+        HashMap<Calendar, Float> pricesByDate = new HashMap<>();
+        try {
+            Uri.Builder uriBuilder = ENDPOINT
+                    .buildUpon()
+                    .appendPath(STOCK)
+                    .appendPath(ticker)
+                    .appendPath(CHART)
+                    .appendPath(FIVE_YEAR);
+            String urlString = uriBuilder.toString();
+            String jsonString = getUrlString(urlString);
+            parseChartDataWithDate(pricesByDate, jsonString);
+        }
+        catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch items", ioe);
+        }
+        catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+        }
+        return pricesByDate;
+    }
+
+    private void parseChartDataWithDate(HashMap<Calendar, Float> pricesByDate, String jsonString) throws JSONException {
+        JSONArray dataJsonArray = new JSONArray(jsonString);
+
+        for (int i = 0; i < dataJsonArray.length(); i++) {
+            JSONObject data = dataJsonArray.getJSONObject(i);
+
+            String date = data.getString("date");
+            String[] partitions = date.split("-");
+            int year = Integer.valueOf(partitions[0]);
+            int month = Integer.valueOf(partitions[1]);
+            int day = Integer.valueOf(partitions[2]);
+            Calendar calendar = new GregorianCalendar(year, month, day);
+            Float price = Float.valueOf(data.getString("close"));
+
+            pricesByDate.put(calendar, price);
         }
     }
 }
