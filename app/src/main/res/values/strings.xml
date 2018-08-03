@@ -19,6 +19,9 @@
     <string name="enter_price">Enter price</string>
     <string name="update">UPDATE</string>
     <string name="delete">DELETE</string>
+    <string name="shares">SHARES</string>
+    <string name="total_value">TOTAL VALUE</string>
+    <string name="transaction_history">TRANSACTION HISTORY</string>
 
     <string name="about">ABOUT</string>
     <string name="sector">SECTOR</string>

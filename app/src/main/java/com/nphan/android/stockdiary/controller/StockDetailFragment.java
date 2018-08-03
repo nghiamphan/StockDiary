@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nphan.android.stockdiary.DataFetch;
@@ -263,6 +263,8 @@ public class StockDetailFragment extends Fragment{
 
         private RecyclerView mTradesRecyclerView;
         private Button mAddTransactionsButton;
+        private TextView mSharesTextView;
+        private TextView mTotalValueView;
 
         private TextView mSectorTextView;
         private TextView mIndustryTextView;
@@ -340,12 +342,19 @@ public class StockDetailFragment extends Fragment{
                 TradesRecyclerAdapter adapter = new TradesRecyclerAdapter(TradeSingleton.get(getActivity()).getTradesByTicker(mTicker));
                 mTradesRecyclerView.setAdapter(adapter);
 
-                LinearLayout rowLabel = itemView.findViewById(R.id.label_row);
+                ConstraintLayout rowLabel = itemView.findViewById(R.id.label_row);
                 if (adapter.getItemCount() == 0) {
                     rowLabel.setVisibility(View.GONE);
                 }
                 else {
                     rowLabel.setVisibility(View.VISIBLE);
+                    int shares = TradeSingleton.get(getActivity()).numberOfSharesByTicker(mTicker);
+
+                    mSharesTextView = itemView.findViewById(R.id.shares);
+                    mSharesTextView.setText(String.valueOf(shares));
+
+                    mTotalValueView = itemView.findViewById(R.id.total_value);
+                    mTotalValueView.setText(String.format(Locale.US, "$%.2f", shares * mStockItem.getPrice()));
                 }
 
                 mAddTransactionsButton = itemView.findViewById(R.id.add_transactions);
@@ -462,15 +471,6 @@ public class StockDetailFragment extends Fragment{
         @Override
         public int getItemViewType(int position) {
             int viewType = mLayoutIdList[position];
-            /*if (position == 1) {
-                viewType = R.layout.list_item_stock_detail_graph;
-            }
-            else if (position == 2) {
-                viewType = R.layout.list_item_stock_detail_key_stats;
-            }
-            else if (position == 3) {
-                viewType = R.layout.list_item_stock_detail_company_detail;
-            }*/
             return viewType;
         }
     }

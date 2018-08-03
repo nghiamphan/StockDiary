@@ -98,6 +98,34 @@ public class TradeSingleton {
         return tradeItems;
     }
 
+    public List<TradeItem> getTradesSortedByDate() {
+
+        List<TradeItem> tradeItems = new ArrayList<>();
+
+        TradeCursorWrapper cursor = queryTrades(
+                null,
+                null,
+                TradeTable.Cols.DATE
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tradeItems.add(cursor.getTradeItem());
+                cursor.moveToNext();
+            }
+        }
+        finally {
+            cursor.close();
+        }
+
+        return tradeItems;
+    }
+
     public List<String> getAllPortfolioTickers() {
         Cursor cursor = mDatabase.rawQuery("SELECT DISTINCT " + TradeTable.Cols.TICKER + " FROM " + TradeTable.NAME + ";", null);
 
@@ -120,7 +148,7 @@ public class TradeSingleton {
         return tickers;
     }
 
-    public int numberOfStocksByTicker(String ticker) {
+    public int numberOfSharesByTicker(String ticker) {
         List<TradeItem> tradeItems = getTradesByTicker(ticker);
         int total = 0;
         for (TradeItem item : tradeItems) {
@@ -147,7 +175,7 @@ public class TradeSingleton {
         return values;
     }
 
-    private TradeCursorWrapper queryTrades(String whereClause, String[] whereArgs) {
+    private TradeCursorWrapper queryTrades(String whereClause, String[] whereArgs, String orderBy) {
         Cursor cursor = mDatabase.query(
                 TradeTable.NAME,
                 null,
@@ -155,10 +183,14 @@ public class TradeSingleton {
                 whereArgs,
                 null,
                 null,
-                null,
+                orderBy,
                 null
         );
 
         return new TradeCursorWrapper(cursor);
+    }
+
+    private TradeCursorWrapper queryTrades(String whereClause, String[] whereArgs) {
+        return queryTrades(whereClause, whereArgs, null);
     }
 }
