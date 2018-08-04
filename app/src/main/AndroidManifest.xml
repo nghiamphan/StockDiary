@@ -24,7 +24,7 @@
         <activity android:name=".controller.StockSearchActivity" />
         <activity android:name=".controller.StockDetailActivity" />
         <activity android:name=".controller.TransactionDetailActivity" />
-        <activity android:name=".controller.PortfolioActivity"></activity>
+        <activity android:name=".controller.PortfolioActivity"/>
     </application>
 
 </manifest>

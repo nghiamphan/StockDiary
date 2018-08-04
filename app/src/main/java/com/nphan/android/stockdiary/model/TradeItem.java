@@ -27,10 +27,6 @@ public class TradeItem {
         return mId;
     }
 
-    public void setId(UUID id) {
-        mId = id;
-    }
-
     public String getBuyOrSell() {
         return mBuyOrSell;
     }

@@ -20,7 +20,6 @@
     <string name="update">UPDATE</string>
     <string name="delete">DELETE</string>
     <string name="shares">SHARES</string>
-    <string name="total_value">TOTAL VALUE</string>
     <string name="transaction_history">TRANSACTION HISTORY</string>
 
     <string name="about">ABOUT</string>
@@ -48,6 +47,5 @@
     <string name="image_button_description">Add or remove stock from watchlist</string>
     <string name="enter_transaction">Enter Transaction</string>
 
-    <string name="ticker">TICKER</string>
     <string name="equity">EQUITY</string>
 </resources>

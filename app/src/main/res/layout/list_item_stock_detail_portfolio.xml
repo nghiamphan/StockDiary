@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/shares_label"
+            android:id="@+id/shares"
             android:layout_width="56dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -62,26 +62,26 @@
             tools:text="10" />
 
         <TextView
-            android:id="@+id/total_value_label"
+            android:id="@+id/equity_label"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:text="@string/total_value"
+            android:text="@string/equity"
             android:textAlignment="textStart"
             android:textColor="@color/lighter_grey"
-            app:layout_constraintStart_toEndOf="@+id/shares_label"
+            app:layout_constraintStart_toEndOf="@+id/shares"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/total_value"
+            android:id="@+id/equity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/total_value_label"
+            app:layout_constraintStart_toEndOf="@+id/equity_label"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="50" />
 

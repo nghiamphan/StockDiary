@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MainMenuFragment extends Fragment {
 
-    FetchTickerAndNameTask mFetchTickerAndNameTask = new FetchTickerAndNameTask();
+    private FetchTickerAndNameTask mFetchTickerAndNameTask = new FetchTickerAndNameTask();
 
     public static MainMenuFragment newInstance() {
 

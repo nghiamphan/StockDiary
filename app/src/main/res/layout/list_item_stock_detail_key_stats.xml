@@ -168,7 +168,6 @@
         tools:text="12.34M"/>
 
     <TextView
-        android:id="@+id/average_volume_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -326,7 +325,6 @@
         tools:text="12.34"/>
 
     <TextView
-        android:id="@+id/price_to_book_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

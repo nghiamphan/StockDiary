@@ -180,7 +180,7 @@ public class StockSearchFragment extends Fragment {
         StockSharedPreferences.setTickerWatchlist(getActivity(), mTickers);
     }
 
-    public void setupAdapter() {
+    private void setupAdapter() {
         if (mAdapter == null) {
             mAdapter = new StockItemAdapter(mStockItems);
             mRecyclerView.setAdapter(mAdapter);
@@ -222,7 +222,7 @@ public class StockSearchFragment extends Fragment {
             itemView.setOnClickListener(this);
         }
 
-        public void bindItem(StockItem stockItem) {
+        void bindItem(StockItem stockItem) {
             mStockItem = stockItem;
             mTickerTextView.setText(stockItem.getTicker());
             mCompanyNameTextView.setText(stockItem.getCompanyName());

@@ -264,7 +264,7 @@ public class StockDetailFragment extends Fragment{
         private RecyclerView mTradesRecyclerView;
         private Button mAddTransactionsButton;
         private TextView mSharesTextView;
-        private TextView mTotalValueView;
+        private TextView mEquityView;
 
         private TextView mSectorTextView;
         private TextView mIndustryTextView;
@@ -350,11 +350,11 @@ public class StockDetailFragment extends Fragment{
                     rowLabel.setVisibility(View.VISIBLE);
                     int shares = TradeSingleton.get(getActivity()).numberOfSharesByTicker(mTicker);
 
-                    mSharesTextView = itemView.findViewById(R.id.shares_label);
+                    mSharesTextView = itemView.findViewById(R.id.shares);
                     mSharesTextView.setText(String.valueOf(shares));
 
-                    mTotalValueView = itemView.findViewById(R.id.total_value);
-                    mTotalValueView.setText(String.format(Locale.US, "$%.2f", shares * mStockItem.getPrice()));
+                    mEquityView = itemView.findViewById(R.id.equity);
+                    mEquityView.setText(String.format(Locale.US, "$%.2f", shares * mStockItem.getPrice()));
                 }
 
                 mAddTransactionsButton = itemView.findViewById(R.id.add_transactions);

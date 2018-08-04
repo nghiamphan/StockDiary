@@ -153,7 +153,7 @@ public class WatchlistFragment extends Fragment {
             itemView.setOnClickListener(this);
         }
 
-        public void bindItem(StockItem stockItem) {
+        void bindItem(StockItem stockItem) {
             String ticker = stockItem.getTicker();
             mStockTickerTextView.setText(ticker);
 
