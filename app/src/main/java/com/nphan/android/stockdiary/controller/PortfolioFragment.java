@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,14 +25,20 @@ import com.nphan.android.stockdiary.R;
 import com.nphan.android.stockdiary.helper.MySparkAdapter;
 import com.nphan.android.stockdiary.model.StockItem;
 import com.nphan.android.stockdiary.model.StockSingleton;
+import com.nphan.android.stockdiary.model.TradeItem;
 import com.nphan.android.stockdiary.model.TradeSingleton;
 import com.robinhood.spark.SparkView;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class PortfolioFragment extends Fragment {
+
+    private final static int MILLIS_IN_A_DAY = 1000 * 3600 * 24;
 
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mRecyclerAdapter;
@@ -40,6 +49,7 @@ public class PortfolioFragment extends Fragment {
 
     private HashMap<String, List<Float>> mChartPrices;
     private HashMap<String, Float> mPreviousPrices;
+    private HashMap<String, HashMap<Long, Float>> mHistoryChartPrices;
 
     public static PortfolioFragment newInstance() {
 
@@ -59,6 +69,7 @@ public class PortfolioFragment extends Fragment {
 
         mChartPrices = StockSingleton.get(getActivity()).getChartPrices();
         mPreviousPrices = StockSingleton.get(getActivity()).getPreviousPrices();
+        mHistoryChartPrices = StockSingleton.get(getActivity()).getHistoryChartPrices();
         FetchTask();
     }
 
@@ -109,6 +120,10 @@ public class PortfolioFragment extends Fragment {
 
             if (!mChartPrices.containsKey(ticker) || mChartPrices.get(ticker) == null) {
                 new FetchPreviousPriceTask().execute(ticker);
+            }
+
+            if (!mHistoryChartPrices.containsKey(ticker) || mHistoryChartPrices.get(ticker) == null) {
+                new FetchChartDataWithDateTask().execute(ticker);
             }
         }
     }
@@ -199,6 +214,9 @@ public class PortfolioFragment extends Fragment {
     private class RecyclerHolder extends RecyclerView.ViewHolder {
         private int mLayoutId;
 
+        private TextView mTotalEquityTextView;
+        private TextView mTodayChangeTextView;
+        private SparkView mGraphSparkView;
         private RecyclerView mPositionRecyclerView;
 
         private RecyclerHolder(LayoutInflater inflater, ViewGroup parent, int layoutId) {
@@ -207,7 +225,54 @@ public class PortfolioFragment extends Fragment {
         }
 
         private void bind() {
-            if (mLayoutId == R.layout.fragment_recycler_view) {
+            List<Float> equities = processHistoryPrices();
+
+            if (mLayoutId == R.layout.list_item_portfolio_title) {
+                mTotalEquityTextView = itemView.findViewById(R.id.total_equity);
+                if (equities != null) {
+                    Spannable spannableString = new SpannableString(String.format(Locale.US,"$%.2f", equities.get(equities.size()-1)));
+                    spannableString.setSpan(new RelativeSizeSpan(0.7f), 0 , 1, 0);
+                    mTotalEquityTextView.setText(spannableString);
+                }
+
+                mTodayChangeTextView = itemView.findViewById(R.id.today_change);
+                if (equities != null && equities.size() >= 2) {
+                    Float last = equities.get(equities.size()-1);
+                    Float preLast = equities.get(equities.size()-2);
+                    Float changeToday = last - preLast;
+                    Float percentChange = changeToday / preLast * 100;
+
+                    String changePrefix;
+                    if (changeToday < 0) {
+                        changePrefix = "-";
+                    }
+                    else {
+                        changePrefix = "+";
+                    }
+                    mTodayChangeTextView.setText(String.format(Locale.US, changePrefix + "$%.2f" + "  " + "(%.2f%%) TODAY", Math.abs(changeToday), percentChange));
+                    if (changeToday < 0) {
+                        mTodayChangeTextView.setTextColor(getResources().getColor(R.color.red));
+                    }
+                    else {
+                        mTodayChangeTextView.setTextColor(getResources().getColor(R.color.green));
+                    }
+                }
+
+            }
+
+            else if (mLayoutId == R.layout.list_item_stock_detail_graph) {
+                mGraphSparkView = itemView.findViewById(R.id.graph_spark_view);
+
+
+                if (equities != null) {
+                    MySparkAdapter mySparkAdapter = new MySparkAdapter(equities, equities.get(0));
+                    mGraphSparkView.setAdapter(mySparkAdapter);
+                    mGraphSparkView.setLineColor(getResources().getColor(mySparkAdapter.getColorId()));
+                    mGraphSparkView.getBaseLinePaint().setPathEffect(mySparkAdapter.getDottedBaseline());
+                }
+            }
+
+            else if (mLayoutId == R.layout.fragment_recycler_view) {
                 mPositionRecyclerView = itemView.findViewById(R.id.recycler_view);
                 mPositionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 PositionRecyclerAdapter adapter = new PositionRecyclerAdapter(mPortfolioStockItems);
@@ -219,6 +284,8 @@ public class PortfolioFragment extends Fragment {
 
     private class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
         int[] mLayoutIdList = {
+                R.layout.list_item_portfolio_title,
+                R.layout.list_item_stock_detail_graph,
                 R.layout.fragment_recycler_view
         };
 
@@ -243,6 +310,58 @@ public class PortfolioFragment extends Fragment {
         public int getItemViewType(int position) {
             return mLayoutIdList[position];
         }
+    }
+
+    private List<Float> processHistoryPrices() {
+        for (String ticker : mPortfolioTickers) {
+            if (!mHistoryChartPrices.containsKey(ticker)) {
+                return null;
+            }
+        }
+
+        List<TradeItem> tradeItems = mTradeSingleton.getTradesSortedByDate();
+        List<Float> equities = new ArrayList<>();
+
+        Calendar today = GregorianCalendar.getInstance();
+        long timestamp = today.getTimeInMillis();
+
+        int index = 0;
+        Calendar curProcessedDay = tradeItems.get(index).getCalendar();
+        HashMap<String, Integer> holdings = new HashMap<>();
+        while (curProcessedDay.getTimeInMillis() < timestamp){
+
+            while (index < tradeItems.size() && tradeItems.get(index).getCalendar().getTimeInMillis() <= curProcessedDay.getTimeInMillis()) {
+                TradeItem item = tradeItems.get(index);
+                if (!holdings.containsKey(item.getTicker())) {
+                    holdings.put(item.getTicker(), 0);
+                }
+
+                Integer shares = holdings.get(item.getTicker());
+                if (item.getBuyOrSell().equals("BUY")) {
+                    shares += item.getQuantity();
+                }
+                else {
+                    shares -= item.getQuantity();
+                }
+                holdings.put(item.getTicker(), shares);
+                index += 1;
+            }
+
+
+            Float equity = (float) 0;
+            for (String ticker : holdings.keySet()) {
+                if (mHistoryChartPrices.get(ticker).containsKey(curProcessedDay.getTimeInMillis())) {
+                    equity += holdings.get(ticker) * mHistoryChartPrices.get(ticker).get(curProcessedDay.getTimeInMillis());
+                }
+            }
+
+            if (equity != 0) {
+                equities.add(equity);
+            }
+            curProcessedDay.setTimeInMillis(curProcessedDay.getTimeInMillis() + MILLIS_IN_A_DAY);
+        }
+
+        return equities;
     }
 
     private class FetchPortfolioLastPriceTask extends AsyncTask<Void, Void, List<StockItem>> {
@@ -296,6 +415,24 @@ public class PortfolioFragment extends Fragment {
         protected void onPostExecute(Float previousPrice) {
             mPreviousPrices.put(mTicker, previousPrice);
             setupAdapter();
+        }
+    }
+
+    private class FetchChartDataWithDateTask extends AsyncTask<String, Void, HashMap<Long, Float>> {
+    /*
+    Fetch price and date within 5 years
+     */
+    private String mTicker;
+
+        @Override
+        protected HashMap<Long, Float> doInBackground(String... strings) {
+            mTicker = strings[0];
+            return new DataFetch().fetchChartDataWithDate(mTicker);
+        }
+
+        @Override
+        protected void onPostExecute(HashMap<Long, Float> fiveYearPrices) {
+            mHistoryChartPrices.put(mTicker, fiveYearPrices);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.nphan.android.stockdiary.model;
 
 import android.content.Context;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class StockSingleton {
     private HashMap<String, StockItem> mCachedStockItems = new HashMap<>();
     private HashMap<String, List<Float>> mChartPrices = new HashMap<>();
     private HashMap<String, Float> mPreviousPrices = new HashMap<>();
-    private HashMap<String, HashMap<Calendar, Float>> mHistoryChartPrices = new HashMap<>();
+    private HashMap<String, HashMap<Long, Float>> mHistoryChartPrices = new HashMap<>();
 
     private StockSingleton(Context context) {
     }
@@ -55,5 +54,9 @@ public class StockSingleton {
 
     public HashMap<String, Float> getPreviousPrices() {
         return mPreviousPrices;
+    }
+
+    public HashMap<String, HashMap<Long, Float>> getHistoryChartPrices() {
+        return mHistoryChartPrices;
     }
 }

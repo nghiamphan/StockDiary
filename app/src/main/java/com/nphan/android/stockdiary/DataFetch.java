@@ -363,12 +363,12 @@ public class DataFetch {
         }
     }
 
-    private HashMap<Calendar, Float> fetchChartDataWithDate(String ticker) {
+    public HashMap<Long, Float> fetchChartDataWithDate(String ticker) {
         /*
         Given a ticker, get that ticker's stock price in 5-year period
          */
 
-        HashMap<Calendar, Float> pricesByDate = new HashMap<>();
+        HashMap<Long, Float> pricesByDate = new HashMap<>();
         try {
             Uri.Builder uriBuilder = ENDPOINT
                     .buildUpon()
@@ -389,7 +389,7 @@ public class DataFetch {
         return pricesByDate;
     }
 
-    private void parseChartDataWithDate(HashMap<Calendar, Float> pricesByDate, String jsonString) throws JSONException {
+    private void parseChartDataWithDate(HashMap<Long, Float> pricesByDate, String jsonString) throws JSONException {
         JSONArray dataJsonArray = new JSONArray(jsonString);
 
         for (int i = 0; i < dataJsonArray.length(); i++) {
@@ -398,12 +398,13 @@ public class DataFetch {
             String date = data.getString("date");
             String[] partitions = date.split("-");
             int year = Integer.valueOf(partitions[0]);
-            int month = Integer.valueOf(partitions[1]);
+            int month = Integer.valueOf(partitions[1]) - 1;
             int day = Integer.valueOf(partitions[2]);
             Calendar calendar = new GregorianCalendar(year, month, day);
+
             Float price = Float.valueOf(data.getString("close"));
 
-            pricesByDate.put(calendar, price);
+            pricesByDate.put(calendar.getTimeInMillis(), price);
         }
     }
 }

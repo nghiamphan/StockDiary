@@ -313,7 +313,7 @@ public class StockDetailFragment extends Fragment{
                 else {
                     changePrefix = "+";
                 }
-                mPriceChangeTextView.setText(String.format(Locale.US, changePrefix + "$%.2f" + "  " + "(%.2f%%)", Math.abs(mStockItem.getChangeToday()), mStockItem.getChangePercent()*100));
+                mPriceChangeTextView.setText(String.format(Locale.US, changePrefix + "$%.2f" + "  " + "(%.2f%%) TODAY", Math.abs(mStockItem.getChangeToday()), mStockItem.getChangePercent()*100));
                 if (mStockItem.getChangeToday() < 0) {
                     mPriceChangeTextView.setTextColor(getResources().getColor(R.color.red));
                 }
