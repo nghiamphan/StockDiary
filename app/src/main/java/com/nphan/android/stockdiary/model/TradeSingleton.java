@@ -151,12 +151,13 @@ public class TradeSingleton {
     public int numberOfSharesByTicker(String ticker) {
         List<TradeItem> tradeItems = getTradesByTicker(ticker);
         int total = 0;
-        for (TradeItem item : tradeItems) {
-            if (item.getBuyOrSell().equals("BUY")) {
-                total += item.getQuantity();
-            }
-            else {
-                total -= item.getQuantity();
+        if (tradeItems != null) {
+            for (TradeItem item : tradeItems) {
+                if (item.getBuyOrSell().equals("BUY")) {
+                    total += item.getQuantity();
+                } else {
+                    total -= item.getQuantity();
+                }
             }
         }
 

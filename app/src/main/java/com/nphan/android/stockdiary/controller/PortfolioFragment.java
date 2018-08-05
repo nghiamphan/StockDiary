@@ -15,6 +15,7 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -88,6 +89,7 @@ public class PortfolioFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_with_search_item, menu);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(getResources().getString(R.string.portfolio));
@@ -95,8 +97,22 @@ public class PortfolioFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_search_icon:
+                Intent intent = StockSearchActivity.newIntent(getActivity());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        mPortfolioTickers = mTradeSingleton.getAllPortfolioTickers();
+        mHistoryChartPrices = StockSingleton.get(getActivity()).getHistoryChartPrices();
         FetchTask();
     }
 
@@ -263,7 +279,6 @@ public class PortfolioFragment extends Fragment {
             else if (mLayoutId == R.layout.list_item_stock_detail_graph) {
                 mGraphSparkView = itemView.findViewById(R.id.graph_spark_view);
 
-
                 if (equities != null) {
                     MySparkAdapter mySparkAdapter = new MySparkAdapter(equities, equities.get(0));
                     mGraphSparkView.setAdapter(mySparkAdapter);
@@ -346,7 +361,6 @@ public class PortfolioFragment extends Fragment {
                 holdings.put(item.getTicker(), shares);
                 index += 1;
             }
-
 
             Float equity = (float) 0;
             for (String ticker : holdings.keySet()) {
@@ -433,6 +447,7 @@ public class PortfolioFragment extends Fragment {
         @Override
         protected void onPostExecute(HashMap<Long, Float> fiveYearPrices) {
             mHistoryChartPrices.put(mTicker, fiveYearPrices);
+            setupAdapter();
         }
     }
 }

@@ -101,7 +101,7 @@ public class WatchlistFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_watchlist, menu);
+        inflater.inflate(R.menu.menu_with_search_item, menu);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(getResources().getString(R.string.watch_list));
@@ -118,7 +118,6 @@ public class WatchlistFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
